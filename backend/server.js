@@ -13,6 +13,8 @@ const handle = app.getRequestHandler();
 require("dotenv").config();
 const connectDb = require("./config/dbConnect");
 
+const authRoutes = require("./routes/authRoutes");
+
 connectDb();
 
 app.prepare().then(() => {
@@ -23,6 +25,8 @@ app.prepare().then(() => {
   server.use(compression());
   server.use(helmet());
   server.use(cors());
+
+  server.use("/", authRoutes);
 
   server.all("*", (req, res) => handle(req, res));
 
