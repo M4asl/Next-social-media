@@ -13,6 +13,7 @@ const handle = app.getRequestHandler();
 require("dotenv").config();
 const connectDb = require("./config/dbConnect");
 
+const globalErrorHandler = require("./helpers/dbErrorHandler");
 const authRoutes = require("./routes/authRoutes");
 
 connectDb();
@@ -29,6 +30,8 @@ app.prepare().then(() => {
   server.use("/", authRoutes);
 
   server.all("*", (req, res) => handle(req, res));
+
+  server.use(globalErrorHandler);
 
   server.listen(port, (err) => {
     if (err) throw err;
