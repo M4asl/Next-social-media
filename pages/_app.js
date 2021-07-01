@@ -3,7 +3,7 @@ import "../styles/globals.css";
 import PropTypes from "prop-types";
 import { ThemeProvider } from "@material-ui/styles";
 import { CssBaseline } from "@material-ui/core";
-import { wrapper } from "../redux/store";
+import { wrapper } from "../store/store";
 import Layout from "../components/Layout/Layout";
 import theme from "../components/theme";
 
