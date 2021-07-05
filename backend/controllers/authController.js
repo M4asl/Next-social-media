@@ -74,7 +74,8 @@ exports.protect = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
 
   if (!token) {
-    return next(
+    res.redirect("/login");
+    next(
       new AppError(
         "You are not logged in! Please log in to get access.",
         401,
@@ -91,7 +92,8 @@ exports.protect = catchAsync(async (req, res, next) => {
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
-    return next(
+    res.redirect("/login");
+    next(
       new AppError(
         "The user belonging to this token does no longer exist.",
         401,
