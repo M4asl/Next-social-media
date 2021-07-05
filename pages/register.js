@@ -7,7 +7,9 @@ import {
   CardContent,
   TextField,
 } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../components/Layout/Loader";
+import { register } from "../store/actions/authActions";
 
 const useStyles = makeStyles((theme) => ({
   registerContainer: {
@@ -29,9 +31,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const register = () => {
+const Register = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const userRegister = useSelector((state) => state.userRegister);
+  const { loading, error } = userRegister;
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -56,6 +62,7 @@ const register = () => {
   return (
     <Card className={classes.registerContainer}>
       <h1 style={{ marginLeft: "20px" }}>Register</h1>
+      {error && "ERROR"}
       <CardContent>
         <TextField
           id="name"
@@ -106,7 +113,7 @@ const register = () => {
             onClick={handleSubmit}
             className={classes.submit}
           >
-            Submit
+            {loading ? <Loader /> : "Submit"}
           </Button>
         </CardActions>
       </CardContent>
@@ -114,4 +121,4 @@ const register = () => {
   );
 };
 
-export default register;
+export default Register;

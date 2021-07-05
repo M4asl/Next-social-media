@@ -7,7 +7,10 @@ import {
   CardContent,
   TextField,
 } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Error from "../components/Layout/Error";
+import { login } from "../store/actions/authActions";
+import Loader from "../components/Layout/Loader";
 
 const useStyles = makeStyles((theme) => ({
   loginContainer: {
@@ -37,6 +40,9 @@ const Login = () => {
     password: "",
   });
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { loading, error, userInfo } = userLogin;
+
   const handleChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
   };
@@ -47,6 +53,7 @@ const Login = () => {
   return (
     <Card className={classes.loginContainer}>
       <h1 style={{ marginLeft: "20px" }}>Login</h1>
+      {error && <Error errorMessage={error} />}
       <CardContent>
         <TextField
           id="email"
@@ -76,7 +83,7 @@ const Login = () => {
             onClick={handleSubmit}
             className={classes.submit}
           >
-            Submit
+            {loading ? <Loader /> : "Submit"}
           </Button>
         </CardActions>
       </CardContent>

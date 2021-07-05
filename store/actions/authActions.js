@@ -13,6 +13,7 @@ import {
 const register =
   (name, email, password, passwordConfirm) => async (dispatch) => {
     try {
+      console.log(name, email);
       dispatch({
         type: USER_REGISTER_REQUEST,
       });
@@ -39,7 +40,7 @@ const register =
         payload: data,
       });
 
-      setCookie("token", data.token);
+      // setCookie("token", data.token);
     } catch (error) {
       dispatch({
         type: USER_REGISTER_FAIL,
