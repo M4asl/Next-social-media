@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+const { Schema, model } = require("mongoose");
 
 const PostSchema = new Schema({
   text: {
@@ -31,4 +31,4 @@ const PostSchema = new Schema({
   },
 });
 
-export default model("Post", PostSchema);
+module.exports = model("Post", PostSchema);
