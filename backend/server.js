@@ -21,9 +21,9 @@ app.prepare().then(() => {
   server.use(bodyParser.urlencoded({ extended: true }));
   server.use(cookieParser());
   server.use(compression());
-  server.all("*", (req, res) => handle(req, res));
   server.use("/", authRoutes);
   server.use("/", postRoutes);
+  server.all("*", (req, res) => handle(req, res));
   server.use(globalErrorHandler);
 
   server.listen(port, (err) => {

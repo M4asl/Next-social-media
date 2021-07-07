@@ -12,7 +12,7 @@ const signToken = (id) =>
 const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
 
-  res.cookie("jwt", token, {
+  res.cookie("token", token, {
     httpOnly: true,
     maxAge: 1000 * 3 * 24 * 60 * 60,
   });
@@ -74,8 +74,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
 
   if (!token) {
-    res.redirect("/login");
-    next(
+    return next(
       new AppError(
         "You are not logged in! Please log in to get access.",
         401,
@@ -92,8 +91,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
-    res.redirect("/login");
-    next(
+    return next(
       new AppError(
         "The user belonging to this token does no longer exist.",
         401,

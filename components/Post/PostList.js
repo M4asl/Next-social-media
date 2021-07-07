@@ -1,18 +1,31 @@
-import React from 'react'
-import Post from './Post'
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { listNewsFeed } from "../../store/actions/postActions";
+import Post from "./Post";
+import Loader from "../Layout/Loader";
+import Error from "../Layout/Error";
 
 const PostList = () => {
-    return (
-        <div>
-            <Post/>
-            <Post/>
-            <Post/>
-            <Post/>
-            <Post/>
-            <Post/>
-            <Post/>
-        </div>
-    )
-}
+  const dispatch = useDispatch();
+  const postListNewsFeed = useSelector(
+    (state) => state.postListNewsFeed,
+  );
+  const { loading, posts, error } = postListNewsFeed;
 
-export default PostList
+  return (
+    <div>
+      {loading && <Loader />}
+      {error && <Error />}
+      {posts &&
+        posts.map((item) => <Post post={item} key={item._id} />)}
+    </div>
+  );
+};
+
+export default PostList;
+
+// export const getServerSideProps = wrapper.getServerSideProps(
+//   async ({ req }) => {
+//     await store.dispatch(listNewsFeed);
+//   },
+// );
