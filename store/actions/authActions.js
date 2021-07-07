@@ -40,7 +40,7 @@ const register =
         payload: data,
       });
 
-      // setCookie("token", data.token);
+      setCookie("token", data.token);
     } catch (error) {
       dispatch({
         type: USER_REGISTER_FAIL,
@@ -95,16 +95,7 @@ const logout = () => (dispatch) => {
   document.location.href = "/login";
 };
 
-const reauthenticate = (token) => {
-  setCookie("token", token);
-};
 
-const chcekServerSideCookie = (ctx) => {
-  const token = getCookie("token", ctx.req);
-  if (token) {
-    ctx.store.dispatch(reauthenticate(token));
-  }
-};
 
 const setCookie = (key, value) => {
   if (process.browser) {
@@ -123,23 +114,6 @@ const removeCookie = (key) => {
   }
 };
 
-const getCookie = (key, req) =>
-  process.browser
-    ? getCookieFromBrowser(key)
-    : getCookieFromServer(key, req);
 
-const getCookieFromBrowser = (key) => cookie.get(key);
-const getCookieFromServer = (key, req) => {
-  if (!req.headers.cookie) {
-    return undefined;
-  }
-  const rawCookie = req.headers.cookie
-    .split(";")
-    .find((c) => c.trim().startsWith(`${key}=`));
-  if (!rawCookie) {
-    return undefined;
-  }
-  return rawCookie.split("=")[1];
-};
 
-export { register, login, logout, chcekServerSideCookie };
+export { register, login, logout };

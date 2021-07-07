@@ -3,11 +3,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
+import { Store } from "@material-ui/icons";
+import { parseCookies } from "nookies";
 import Profile from "../components/Profile/Profile";
 import Suggestion from "../components/Profile/Suggestion";
 import NewPost from "../components/Post/NewPost";
 import ChatColumn from "../components/Chats/ChatColumn";
 import PostList from "../components/Post/PostList";
+import { wrapper } from "../store/store";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,4 +55,20 @@ export default function Home() {
       </Grid>
     </div>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  const { token } = await parseCookies(ctx);
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
 }

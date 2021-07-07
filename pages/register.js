@@ -8,6 +8,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
+import { parseCookies } from "nookies";
 import Loader from "../components/Layout/Loader";
 import { register } from "../store/actions/authActions";
 
@@ -120,5 +121,21 @@ const Register = () => {
     </Card>
   );
 };
+
+export async function getServerSideProps(ctx) {
+  const { token } = await parseCookies(ctx);
+
+  if (token) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
+}
 
 export default Register;
