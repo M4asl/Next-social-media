@@ -11,7 +11,7 @@ const { protect } = require("../controllers/authController");
 
 const router = express.Router();
 
-router.route("/api/posts/feed/:userId").get(protect, listNewsFeed);
+router.route("/api/posts/feed").get(protect, listNewsFeed);
 
 router.route("/api/posts/by/:userId").get(protect, listByUser);
 

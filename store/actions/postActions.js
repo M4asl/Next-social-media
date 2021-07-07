@@ -16,44 +16,44 @@ import {
 } from "../constants/postConstants";
 import { logout } from "./authActions";
 
-const listNewsFeed = (pageNumber) => async (dispatch, getState) => {
-  try {
-    dispatch({ type: POST_LIST_NEWS_FEED_REQUEST });
+const listNewsFeed =
+  (pageNumber, authCookie) => async (dispatch, getState) => {
+    try {
+      dispatch({ type: POST_LIST_NEWS_FEED_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+      const config = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: authCookie,
+        },
+      };
 
-    const config = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-
-    const { data } = await axios.get(
-      `/api/posts/feed/${userInfo._id}?pageNumber=${pageNumber}`,
-      config,
-    );
-    if (pageNumber > 2) {
-      dispatch({ type: UPDATE_POST_LIST, payload: data });
-    } else
-      dispatch({ type: POST_LIST_NEWS_FEED_SUCCESS, payload: data });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === "Not authorized, token failed") {
-      dispatch(logout());
+      const { data } = await axios.get(
+        `/api/posts/feed/?pageNumber=${pageNumber}`,
+        config,
+      );
+      if (pageNumber > 2) {
+        dispatch({ type: UPDATE_POST_LIST, payload: data });
+      } else
+        dispatch({
+          type: POST_LIST_NEWS_FEED_SUCCESS,
+          payload: data,
+        });
+    } catch (error) {
+      const message =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      if (message === "Not authorized, token failed") {
+        dispatch(logout());
+      }
+      dispatch({
+        type: POST_LIST_NEWS_FEED_FAIL,
+        payload: message,
+      });
     }
-    dispatch({
-      type: POST_LIST_NEWS_FEED_FAIL,
-      payload: message,
-    });
-  }
-};
+  };
 
 const updateListNewsFeed =
   (pageNumber) => async (dispatch, getState) => {

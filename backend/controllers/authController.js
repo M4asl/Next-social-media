@@ -71,7 +71,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
-  const token = req.cookies.jwt;
+  const { token } = req.cookies;
 
   if (!token) {
     return next(

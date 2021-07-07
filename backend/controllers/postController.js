@@ -43,7 +43,7 @@ exports.listNewsFeed = catchAsync(async (req, res) => {
   const { pageNumber } = req.query;
   const number = Number(pageNumber);
   const size = 3;
-  const user = await User.findById(req.params.userId);
+  const user = await User.findById(req.user._id);
   const { following, _id } = user;
   following.push(_id);
   let posts;
