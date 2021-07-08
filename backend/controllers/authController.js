@@ -116,3 +116,9 @@ exports.hasAuthorization = catchAsync(async (req, res, next) => {
   }
   next();
 });
+
+exports.getCurrentUserProfile = catchAsync(async (req, res) => {
+  const currentUserProfile = await User.findById(req.user._id);
+
+  res.status(200).json(currentUserProfile);
+});
