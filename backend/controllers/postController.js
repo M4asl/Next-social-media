@@ -89,7 +89,6 @@ exports.createPost = catchAsync(async (req, res) => {
   const user = await User.findById(req.params.userId).select(
     "_id name photo",
   );
-  // console.log(user);
   const postFormData = {
     text: req.body.text,
     postedBy: user,
@@ -103,4 +102,92 @@ exports.createPost = catchAsync(async (req, res) => {
 exports.removePost = catchAsync(async (req, res) => {
   const post = await Post.findByIdAndDelete(req.params.postId);
   return res.status(204).json(post);
+});
+
+exports.likePost = catchAsync(async (req, res, next) => {
+  await Post.findByIdAndUpdate(req.body.postId, {
+    $push: { likes: req.body.likeId },
+  });
+  next();
+});
+
+exports.likedPost = catchAsync(async (req, res) => {
+  const result = await User.findByIdAndUpdate(
+    req.body.likeId,
+    { $push: { liked: req.body.postId } },
+    { new: true },
+  )
+    .select("liked")
+    .populate("liked", "_id text")
+    .exec();
+  res.json(result);
+});
+
+exports.unlikePost = catchAsync(async (req, res, next) => {
+  await Post.findByIdAndUpdate(req.body.postId, {
+    $pull: { likes: req.body.unlikeId },
+  });
+  next();
+});
+
+exports.unlikedPost = catchAsync(async (req, res) => {
+  const result = await User.findByIdAndUpdate(
+    req.body.unlikeId,
+    { $pull: { liked: req.body.postId } },
+    { new: true },
+  )
+    .populate("liked", "_id name")
+    .exec();
+  res.json(result);
+});
+
+exports.findLikesPost = catchAsync(async (req, res) => {
+  const post = await Post.findById(req.params.postId);
+  const { likes } = post;
+  const users = await User.find({ _id: { $in: likes } }).select(
+    "name",
+  );
+  res.json(users);
+});
+
+exports.comment = catchAsync(async (req, res) => {
+  const { comment } = req.body;
+  comment.postedBy = req.body.userId;
+
+  const result = await Post.findByIdAndUpdate(
+    req.body.postId,
+    { $push: { comments: comment } },
+    { new: true },
+  )
+    .populate("comments.postedBy", "_id name")
+    .populate("postedBy", "_id name")
+    .exec();
+  res.json(result);
+});
+
+exports.uncomment = catchAsync(async (req, res) => {
+  const { comment } = req.body;
+
+  const result = await Post.findByIdAndUpdate(
+    req.body.postId,
+    { $pull: { comments: { _id: comment._id } } },
+    { new: true },
+  )
+    .populate("comments.postedBy", "_id name")
+    .populate("postedBy", "_id name")
+    .exec();
+  res.json(result);
+});
+
+exports.isPoster = catchAsync(async (req, res, next) => {
+  const post = await Post.findById(req.params.postId);
+  const authorized = await (post &&
+    req.user &&
+    post.postedBy._id.toString() == req.user._id.toString());
+  if (!authorized) {
+    return res.status("403").json({
+      error: "User is not authorized",
+    });
+  }
+  next();
 });
