@@ -1,6 +1,12 @@
 import axios from "axios";
 import cookie from "js-cookie";
+import absoluteUrl from "next-absolute-url";
+import Router from "next/router";
+
 import {
+  CURRENT_USER_PROFILE_DETAILS_FAIL,
+  CURRENT_USER_PROFILE_DETAILS_REQUEST,
+  CURRENT_USER_PROFILE_DETAILS_SUCCESS,
   USER_LOGIN_FAIL,
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
@@ -8,12 +14,13 @@ import {
   USER_REGISTER_FAIL,
   USER_REGISTER_REQUEST,
   USER_REGISTER_SUCCESS,
+  AUTHENTICATE,
+  DEAUTHENTICATE,
 } from "../constants/authConstants";
 
 const register =
   (name, email, password, passwordConfirm) => async (dispatch) => {
     try {
-      console.log(name, email);
       dispatch({
         type: USER_REGISTER_REQUEST,
       });
@@ -41,6 +48,8 @@ const register =
       });
 
       setCookie("token", data.token);
+      Router.push("/");
+      dispatch({ type: AUTHENTICATE, payload: data.token });
     } catch (error) {
       dispatch({
         type: USER_REGISTER_FAIL,
@@ -76,6 +85,8 @@ const login = (email, password) => async (dispatch) => {
     });
 
     setCookie("token", data.token);
+    Router.push("/");
+    dispatch({ type: AUTHENTICATE, payload: data.token });
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
@@ -92,10 +103,13 @@ const logout = () => (dispatch) => {
   dispatch({ type: USER_LOGOUT });
   dispatch({ type: USER_DETAILS_RESET });
   dispatch({ type: USER_LIST_RESET });
-  document.location.href = "/login";
+  Router.push("/login");
+  dispatch({ type: DEAUTHENTICATE });
 };
 
-
+const authCookie = (authCookie) => (dispatch) => {
+  dispatch({ type: AUTHENTICATE, payload: authCookie });
+};
 
 const setCookie = (key, value) => {
   if (process.browser) {
@@ -114,6 +128,39 @@ const removeCookie = (key) => {
   }
 };
 
+const getCurrentUserDetails =
+  (authCookie, req) => async (dispatch) => {
+    try {
+      const { origin } = absoluteUrl(req);
 
+      dispatch({
+        type: CURRENT_USER_PROFILE_DETAILS_REQUEST,
+      });
 
-export { register, login, logout };
+      const config = {
+        headers: {
+          Cookie: authCookie,
+        },
+      };
+
+      const { data } = await axios.get(
+        `${origin}/api/auth/me`,
+        config,
+      );
+
+      dispatch({
+        type: CURRENT_USER_PROFILE_DETAILS_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: CURRENT_USER_PROFILE_DETAILS_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
+
+export { register, login, logout, getCurrentUserDetails, authCookie };

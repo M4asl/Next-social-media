@@ -86,9 +86,13 @@ exports.listByUser = catchAsync(async (req, res) => {
 });
 
 exports.createPost = catchAsync(async (req, res) => {
+  const user = await User.findById(req.params.userId).select(
+    "_id name photo",
+  );
+  // console.log(user);
   const postFormData = {
     text: req.body.text,
-    postedBy: req.params.userId,
+    postedBy: user,
     photo: req.file?.filename,
   };
   const post = await Post.create(postFormData);

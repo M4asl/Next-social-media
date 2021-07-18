@@ -1,7 +1,9 @@
 import { combineReducers } from "redux";
 import {
+  getCurrentUserDetailsReducer,
   userLoginReducer,
   userRegisterReducer,
+  authCookieReducer,
 } from "./authReducers";
 import {
   postListNewsFeedReducer,
@@ -13,10 +15,12 @@ import {
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
+  getCurrentUserDetails: getCurrentUserDetailsReducer,
   postListNewsFeed: postListNewsFeedReducer,
   postListByUser: postListByUserReducer,
   postCreate: postCreateReducer,
   postRemove: postRemoveReducer,
+  authCookie: authCookieReducer,
 });
 
 export default reducer;

@@ -12,6 +12,7 @@ import {
 import TextField from "@material-ui/core/TextField";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
+import Moment from "react-moment";
 import theme from "../theme";
 
 const useStyles = makeStyles((theme) => ({
@@ -89,15 +90,19 @@ const Input = withStyles({
   },
 })(TextField);
 
-const Post = () => {
+const Post = ({ post }) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
       <Card className={classes.backgroundPost}>
         <PostHeader
           avatar={<Avatar aria-label="recipe">R</Avatar>}
-          title="Mateusz Masłowiec"
-          subheader={<span>9 hours ago</span>}
+          title={post.postedBy.name}
+          subheader={
+            <Moment fromNow style={{ color: "#BFBFBF" }}>
+              {post.created}
+            </Moment>
+          }
         />
         <Divider className={classes.divider} />
         <CardContent>
@@ -106,15 +111,17 @@ const Post = () => {
             color="textPrimary"
             component="p"
           >
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-            Laborum, tempore architecto provident corporis
-            voluptatibus blanditiis commodi. Amet id odio impedit.
+            {post.text}
           </Typography>
         </CardContent>
         <Divider className={classes.divider} />
         <div className={classes.statisticsBox}>
-          <Typography variant="caption">876 Likes</Typography>
-          <Typography variant="caption">17 Comments</Typography>
+          <Typography variant="caption">
+            {post.likes.length} likes
+          </Typography>
+          <Typography variant="caption">
+            {post.comments.length} comments
+          </Typography>
         </div>
         <Divider className={classes.divider} />
         <div className={classes.buttonBox}>

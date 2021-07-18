@@ -19,9 +19,13 @@ const postListNewsFeedReducer = (state = { posts: [] }, action) => {
     case POST_LIST_NEWS_FEED_REQUEST:
       return { loading: true };
     case POST_LIST_NEWS_FEED_SUCCESS:
-      return { posts: action.payload };
+      return { loading: false, posts: action.payload };
     case UPDATE_POST_LIST:
-      return { posts: state.posts.concat(action.payload) };
+      return {
+        loading: false,
+        ...state,
+        posts: [action.payload, ...state.posts],
+      };
     case POST_LIST_NEWS_FEED_FAIL:
       return { loading: false, error: action.payload };
     default:

@@ -1,16 +1,20 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
-import { Store } from "@material-ui/icons";
 import { parseCookies } from "nookies";
+import { connect } from "react-redux";
 import Profile from "../components/Profile/Profile";
 import Suggestion from "../components/Profile/Suggestion";
 import NewPost from "../components/Post/NewPost";
 import ChatColumn from "../components/Chats/ChatColumn";
 import PostList from "../components/Post/PostList";
 import { wrapper } from "../store/store";
+import { listNewsFeed } from "../store/actions/postActions";
+import {
+  getCurrentUserDetails,
+  authCookie,
+} from "../store/actions/authActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Home() {
+function Home() {
   const classes = useStyles();
 
   return (
@@ -57,18 +61,27 @@ export default function Home() {
   );
 }
 
-export async function getServerSideProps(ctx) {
-  const { token } = await parseCookies(ctx);
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req }) => {
+      const { token } = await parseCookies({ req });
+      if (!token) {
+        return {
+          redirect: {
+            destination: "/login",
+            permanent: false,
+          },
+        };
+      }
+      await store.dispatch(authCookie(req.headers.cookie));
+      await store.dispatch(
+        getCurrentUserDetails(req.headers.cookie, req),
+      );
+      await store.dispatch(listNewsFeed(req.headers.cookie, req));
+      return {
+        props: {},
+      };
+    },
+);
 
-  if (!token) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {},
-  };
-}
+export default Home;

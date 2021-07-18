@@ -1,4 +1,5 @@
 import axios from "axios";
+import absoluteUrl from "next-absolute-url";
 import {
   POST_CREATE_FAIL,
   POST_CREATE_REQUEST,
@@ -16,44 +17,40 @@ import {
 } from "../constants/postConstants";
 import { logout } from "./authActions";
 
-const listNewsFeed =
-  (pageNumber, authCookie) => async (dispatch, getState) => {
-    try {
-      dispatch({ type: POST_LIST_NEWS_FEED_REQUEST });
+const listNewsFeed = (authCookie, req) => async (dispatch) => {
+  try {
+    const { origin } = absoluteUrl(req);
+    dispatch({ type: POST_LIST_NEWS_FEED_REQUEST });
 
-      const config = {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: authCookie,
-        },
-      };
+    const config = {
+      headers: {
+        Cookie: authCookie,
+      },
+    };
 
-      const { data } = await axios.get(
-        `/api/posts/feed/?pageNumber=${pageNumber}`,
-        config,
-      );
-      if (pageNumber > 2) {
-        dispatch({ type: UPDATE_POST_LIST, payload: data });
-      } else
-        dispatch({
-          type: POST_LIST_NEWS_FEED_SUCCESS,
-          payload: data,
-        });
-    } catch (error) {
-      const message =
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message;
-      if (message === "Not authorized, token failed") {
-        dispatch(logout());
-      }
-      dispatch({
-        type: POST_LIST_NEWS_FEED_FAIL,
-        payload: message,
-      });
+    const { data } = await axios.get(
+      `${origin}/api/posts/feed`,
+      config,
+    );
+
+    dispatch({
+      type: POST_LIST_NEWS_FEED_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
     }
-  };
+    dispatch({
+      type: POST_LIST_NEWS_FEED_FAIL,
+      payload: message,
+    });
+  }
+};
 
 const updateListNewsFeed =
   (pageNumber) => async (dispatch, getState) => {
@@ -132,24 +129,28 @@ const createPost = (post) => async (dispatch, getState) => {
     dispatch({ type: POST_CREATE_REQUEST });
 
     const {
-      userLogin: { userInfo },
+      getCurrentUserDetails: { currentUserDetails },
+      authCookie,
     } = getState();
+
+    console.log(authCookie);
 
     const config = {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
+        Cookie: authCookie,
       },
     };
 
     const { data } = await axios.post(
-      `/api/posts/new/${userInfo._id}`,
+      `/api/posts/new/${currentUserDetails._id}`,
       post,
       config,
     );
 
     dispatch({ type: POST_CREATE_SUCCESS, payload: data });
+    dispatch({ type: UPDATE_POST_LIST, payload: data });
   } catch (error) {
     const message =
       error.response && error.response.data.message
