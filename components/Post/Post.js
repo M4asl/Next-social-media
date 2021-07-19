@@ -9,12 +9,10 @@ import {
   Divider,
   Typography,
 } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import Moment from "react-moment";
 import { useDispatch, useSelector } from "react-redux";
-import theme from "../theme";
 import {
   likePost,
   unlikePost,
@@ -55,10 +53,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     margin: "5px 0px",
   },
-  addCommentBox: {
-    display: "flex",
-    alignItems: "center",
-  },
 }));
 
 const PostHeader = withStyles({
@@ -70,32 +64,6 @@ const PostHeader = withStyles({
     },
   },
 })(CardHeader);
-
-const Input = withStyles({
-  root: {
-    width: "100%",
-    borderRadius: "15px",
-    borderColor: theme.palette.background.paper,
-    marginLeft: "10px",
-    "& label": {
-      color: theme.palette.text.primary,
-    },
-    "& label.Mui-focused": {
-      color: theme.palette.text.primary,
-      fontWeight: "700",
-    },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "transparent",
-        borderRadius: "15px",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: theme.palette.text.primary,
-        borderRadius: "15px",
-      },
-    },
-  },
-})(TextField);
 
 const Post = ({ post }) => {
   const classes = useStyles();
@@ -197,14 +165,8 @@ const Post = ({ post }) => {
             <ChatBubbleOutlineIcon />
           </Button>
         </div>
-        <div className={classes.addCommentBox}>
-          <Avatar
-            alt="Avatar Picture"
-            src={`../../dist/img/users/${post.postedBy.photo}`}
-          />
-          <Input label="Text something..." variant="outlined" />
-        </div>
-        <Comments comments={post.comments} />
+
+        <Comments comments={post.comments} postId={post._id} />
       </Card>
     </div>
   );
