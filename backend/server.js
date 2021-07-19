@@ -1,5 +1,6 @@
 const express = require("express");
 const connectDb = require("./config/dbConnect");
+const path = require("path");
 require("dotenv").config();
 const next = require("next");
 const bodyParser = require("body-parser");
@@ -21,6 +22,10 @@ app.prepare().then(() => {
   server.use(bodyParser.urlencoded({ extended: true }));
   server.use(cookieParser());
   server.use(compression());
+  server.use(
+    "/dist",
+    express.static(path.join(process.cwd(), "dist")),
+  );
   server.use("/", authRoutes);
   server.use("/", postRoutes);
   server.all("*", (req, res) => handle(req, res));

@@ -53,7 +53,7 @@ exports.listNewsFeed = catchAsync(async (req, res) => {
     })
       .limit(size)
       .populate("likes", "_id name")
-      .populate("comments.postedBy", "_id name")
+      .populate("comments.postedBy", "_id name photo")
       .populate("postedBy", "_id name photo")
       .sort("-created")
       .exec();
@@ -65,7 +65,7 @@ exports.listNewsFeed = catchAsync(async (req, res) => {
       .skip(skips)
       .limit(size)
       .populate("likes", "_id name")
-      .populate("comments.postedBy", "_id name")
+      .populate("comments.postedBy", "_id name photo")
       .populate("postedBy", "_id name photo")
       .sort("-created")
       .exec();
@@ -77,7 +77,7 @@ exports.listNewsFeed = catchAsync(async (req, res) => {
 exports.listByUser = catchAsync(async (req, res) => {
   const posts = await Post.find({ postedBy: req.params.userId })
     .populate("likes", "_id name")
-    .populate("comments.postedBy", "_id name")
+    .populate("comments.postedBy", "_id name photo")
     .populate("postedBy", "_id name photo")
     .sort("-created")
     .exec();
@@ -159,8 +159,8 @@ exports.comment = catchAsync(async (req, res) => {
     { $push: { comments: comment } },
     { new: true },
   )
-    .populate("comments.postedBy", "_id name")
-    .populate("postedBy", "_id name")
+    .populate("comments.postedBy", "_id name photo")
+    .populate("postedBy", "_id name photo")
     .exec();
   res.json(result);
 });
@@ -173,8 +173,8 @@ exports.uncomment = catchAsync(async (req, res) => {
     { $pull: { comments: { _id: comment._id } } },
     { new: true },
   )
-    .populate("comments.postedBy", "_id name")
-    .populate("postedBy", "_id name")
+    .populate("comments.postedBy", "_id name photo")
+    .populate("postedBy", "_id name photo")
     .exec();
   res.json(result);
 });
