@@ -6,7 +6,7 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   backgroundChat: {
     background: theme.palette.background.secondary,
     borderRadius: "15px",
@@ -18,90 +18,6 @@ const Chat = () => {
   const classes = useStyles();
   return (
     <List>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
-      <ListItem className={classes.backgroundChat}>
-        <ListItemAvatar>
-          <Avatar />
-        </ListItemAvatar>
-        <ListItemText primary="Mateusz Masłowiec" />
-      </ListItem>
       <ListItem className={classes.backgroundChat}>
         <ListItemAvatar>
           <Avatar />

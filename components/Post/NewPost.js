@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -11,7 +11,7 @@ import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import theme from "../theme";
 import { createPost } from "../../store/actions/postActions";
 
@@ -93,20 +93,14 @@ export default function NewPost() {
     photo: "",
   });
   const dispatch = useDispatch();
-  const postCreate = useSelector((state) => state.postCreate);
-  const { post } = postCreate;
 
-  // useEffect(() => {
-  //   if (post) {
-  //     addPost(post);
-  //   }
-  // }, [post]);
   const clickPost = () => {
     const postData = new FormData();
     postData.append("text", values.text);
     postData.append("photo", values.photo);
     dispatch(createPost(postData));
     setValues({ ...values });
+    setValues({ text: "", photo: "" });
   };
   const handleChange = (name) => (event) => {
     const value =
