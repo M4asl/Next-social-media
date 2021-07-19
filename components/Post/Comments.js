@@ -38,8 +38,8 @@ const Comments = ({ comments }) => {
           >
             <ListItemAvatar>
               <Avatar
-                alt="Remy Sharp"
-                src="/static/images/avatar/1.jpg"
+                alt="Avatar Picture"
+                src={`../../dist/img/users/${comment.postedBy.photo}`}
               />
             </ListItemAvatar>
             <ListItemText

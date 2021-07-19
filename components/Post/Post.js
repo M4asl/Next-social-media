@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PostHeader = withStyles({
   root: {
+    padding: "16px 0px",
     "& .MuiCardHeader-content": {
       display: "flex",
       justifyContent: "space-between",
@@ -141,7 +142,12 @@ const Post = ({ post }) => {
     <div className={classes.root}>
       <Card className={classes.backgroundPost}>
         <PostHeader
-          avatar={<Avatar aria-label="recipe">R</Avatar>}
+          avatar={
+            <Avatar
+              alt="Avatar Picture"
+              src={`../../dist/img/users/${post.postedBy.photo}`}
+            />
+          }
           title={post.postedBy.name}
           subheader={
             <Moment fromNow style={{ color: "#BFBFBF" }}>
@@ -192,7 +198,10 @@ const Post = ({ post }) => {
           </Button>
         </div>
         <div className={classes.addCommentBox}>
-          <Avatar>R</Avatar>
+          <Avatar
+            alt="Avatar Picture"
+            src={`../../dist/img/users/${post.postedBy.photo}`}
+          />
           <Input label="Text something..." variant="outlined" />
         </div>
         <Comments comments={post.comments} />
@@ -202,4 +211,3 @@ const Post = ({ post }) => {
 };
 
 export default Post;
-

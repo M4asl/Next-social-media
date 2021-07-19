@@ -38,9 +38,10 @@ export default function Profile() {
     <Card className={classes.root}>
       <CardHeader
         avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            R
-          </Avatar>
+          <Avatar
+            alt="Avatar Picture"
+            src={`../../dist/img/users/${currentUserDetails.photo}`}
+          />
         }
         title={currentUserDetails?.name}
         subheader={currentUserDetails?.email}

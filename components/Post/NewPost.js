@@ -11,7 +11,7 @@ import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import theme from "../theme";
 import { createPost } from "../../store/actions/postActions";
 
@@ -88,6 +88,9 @@ const Input = withStyles({
 
 export default function NewPost() {
   const classes = useStyles();
+  const { currentUserDetails } = useSelector(
+    (state) => state.getCurrentUserDetails,
+  );
   const [values, setValues] = useState({
     text: "",
     photo: "",
@@ -112,9 +115,10 @@ export default function NewPost() {
     <Card className={classes.root}>
       <CardHeader
         avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            R
-          </Avatar>
+          <Avatar
+            alt="Avatar Picture"
+            src={`../../dist/img/users/${currentUserDetails.photo}`}
+          />
         }
         title="M4asl"
         subheader="Mateusz Masłowiec"
