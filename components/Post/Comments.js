@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -8,6 +8,8 @@ import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import { useDispatch, useSelector } from "react-redux";
+import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
+import { Button } from "@material-ui/core";
 import theme from "../theme";
 import { comment, uncomment } from "../../store/actions/postActions";
 
@@ -17,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
   listItem: {
     width: "fit-content",
+    overflowWrap: "anywhere",
     margin: "10px 0px",
     borderRadius: "15px",
     background: "rgba( 255, 255, 255, 0.25 )",
@@ -58,9 +61,10 @@ const Input = withStyles({
   },
 })(TextField);
 
-const Comments = ({ comments, postId }) => {
+const Comments = ({ comments, post }) => {
   const classes = useStyles();
   const [text, setText] = useState("");
+  const [commentsList, setCommentsList] = useState(comments);
   const dispatch = useDispatch();
   const { currentUserDetails } = useSelector(
     (state) => state.getCurrentUserDetails,
@@ -71,33 +75,30 @@ const Comments = ({ comments, postId }) => {
   };
   const addComment = (event) => {
     if (event.keyCode === 13 && event.target.value) {
+      const newComment = {
+        text,
+        postedBy: currentUserDetails,
+        created: new Date().toISOString,
+      };
       event.preventDefault();
-      dispatch(comment(currentUserDetails._id, postId, text));
+      dispatch(comment(currentUserDetails._id, newComment, post));
       setText("");
     }
   };
 
+  useEffect(() => {
+    setCommentsList(post.comments);
+  }, [post.comments]);
+
   const deleteComment = (comment) => (event) => {
-    dispatch(uncomment(postId, comment._id));
+    dispatch(uncomment(post, comment._id));
   };
+
   return (
     <>
-      <div className={classes.addCommentBox}>
-        <Avatar
-          alt="Avatar Picture"
-          src={`../../dist/img/users/${currentUserDetails.photo}`}
-        />
-        <Input
-          label="Text something..."
-          variant="outlined"
-          onKeyDown={addComment}
-          onChange={handleChange}
-          value={text}
-        />
-      </div>
       <List className={classes.root}>
         {comments &&
-          comments.map((comment) => (
+          commentsList.map((comment) => (
             <ListItem
               alignItems="flex-start"
               className={classes.listItem}
@@ -120,6 +121,12 @@ const Comments = ({ comments, postId }) => {
                       color="textPrimary"
                     >
                       {comment.text}
+                      {currentUserDetails._id ===
+                        comment.postedBy._id && (
+                        <Button onClick={deleteComment(comment)}>
+                          <DeleteOutlineIcon />
+                        </Button>
+                      )}
                     </Typography>
                   </>
                 }
@@ -127,6 +134,19 @@ const Comments = ({ comments, postId }) => {
             </ListItem>
           ))}
       </List>
+      <div className={classes.addCommentBox}>
+        <Avatar
+          alt="Avatar Picture"
+          src={`../../dist/img/users/${currentUserDetails.photo}`}
+        />
+        <Input
+          label="Text something..."
+          variant="outlined"
+          onKeyDown={addComment}
+          onChange={handleChange}
+          value={text}
+        />
+      </div>
     </>
   );
 };

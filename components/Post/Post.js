@@ -69,15 +69,13 @@ const Post = ({ post }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [like, setLike] = useState(false);
-  const [likesLength, setLikesLength] = useState(post.likes.length);
   const { currentUserDetails } = useSelector(
     (state) => state.getCurrentUserDetails,
   );
 
   const clickLikeButton = (callApi) => {
-    dispatch(callApi(post._id, currentUserDetails._id));
+    dispatch(callApi(post, currentUserDetails));
     setLike(!like);
-    setLikesLength(post.likes.length);
   };
 
   const clickLike = () => {
@@ -136,7 +134,7 @@ const Post = ({ post }) => {
         <Divider className={classes.divider} />
         <div className={classes.statisticsBox}>
           <Typography variant="caption">
-            {likesLength} likes
+            {post.likes.length} likes
           </Typography>
           <Typography variant="caption">
             {post.comments.length} comments
@@ -166,7 +164,7 @@ const Post = ({ post }) => {
           </Button>
         </div>
 
-        <Comments comments={post.comments} postId={post._id} />
+        <Comments comments={post.comments} post={post} />
       </Card>
     </div>
   );

@@ -1,4 +1,7 @@
-const { Schema, model } = require("mongoose");
+const mongoose = require("mongoose");
+
+const { Schema } = mongoose;
+mongoose.Promise = global.Promise;
 
 const PostSchema = new Schema({
   text: {
@@ -31,4 +34,6 @@ const PostSchema = new Schema({
   },
 });
 
-module.exports = model("Post", PostSchema);
+global.PostSchema =
+  global.PostSchema || mongoose.model("Post", PostSchema);
+module.exports = global.PostSchema;

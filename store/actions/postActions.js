@@ -1,38 +1,20 @@
 import axios from "axios";
 import absoluteUrl from "next-absolute-url";
 import {
-  POST_COMMENT_FAIL,
-  POST_COMMENT_REQUEST,
-  POST_COMMENT_SUCCESS,
-  POST_CREATE_FAIL,
-  POST_CREATE_REQUEST,
-  POST_CREATE_SUCCESS,
-  POST_LIKE_FAIL,
-  POST_LIKE_REQUEST,
-  POST_LIKE_SUCCESS,
-  POST_LIST_BY_USER_FAIL,
-  POST_LIST_BY_USER_REQUEST,
-  POST_LIST_BY_USER_SUCCESS,
-  POST_LIST_NEWS_FEED_FAIL,
-  POST_LIST_NEWS_FEED_REQUEST,
-  POST_LIST_NEWS_FEED_SUCCESS,
-  POST_REMOVE_FAIL,
-  POST_REMOVE_REQUEST,
-  POST_REMOVE_SUCCESS,
-  POST_UNCOMMENT_FAIL,
-  POST_UNCOMMENT_REQUEST,
-  POST_UNCOMMENT_SUCCESS,
-  POST_UNLIKE_FAIL,
-  POST_UNLIKE_REQUEST,
-  POST_UNLIKE_SUCCESS,
-  UPDATE_POST_LIST,
+  POST_LIST_NEWS_FEED,
+  POST_LIST_BY_USER,
+  POST_CREATE,
+  POST_UPDATE,
+  POST_REMOVE,
+  POST_LOADING,
 } from "../constants/postConstants";
+import { GLOBAL_ALERT } from "../constants/globalConstants";
 import { logout } from "./authActions";
 
 const listNewsFeed = (authCookie, req) => async (dispatch) => {
   try {
     const { origin } = absoluteUrl(req);
-    dispatch({ type: POST_LIST_NEWS_FEED_REQUEST });
+    dispatch({ type: POST_LOADING, payload: true });
 
     const config = {
       headers: {
@@ -46,8 +28,13 @@ const listNewsFeed = (authCookie, req) => async (dispatch) => {
     );
 
     dispatch({
-      type: POST_LIST_NEWS_FEED_SUCCESS,
+      type: POST_LIST_NEWS_FEED,
       payload: data,
+    });
+
+    dispatch({
+      type: POST_LOADING,
+      payload: false,
     });
   } catch (error) {
     const message =
@@ -58,53 +45,15 @@ const listNewsFeed = (authCookie, req) => async (dispatch) => {
       dispatch(logout());
     }
     dispatch({
-      type: POST_LIST_NEWS_FEED_FAIL,
+      type: GLOBAL_ALERT,
       payload: message,
     });
   }
 };
 
-const updateListNewsFeed =
-  (pageNumber) => async (dispatch, getState) => {
-    try {
-      dispatch({ type: POST_LIST_NEWS_FEED_REQUEST });
-
-      const {
-        userLogin: { userInfo },
-      } = getState();
-
-      const config = {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-
-      const { data } = await axios.get(
-        `/api/posts/feed/${userInfo._id}?pageNumber=${pageNumber}`,
-        config,
-      );
-
-      dispatch({ type: UPDATE_POST_LIST, payload: data });
-    } catch (error) {
-      const message =
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message;
-      if (message === "Not authorized, token failed") {
-        dispatch(logout());
-      }
-      dispatch({
-        type: POST_LIST_NEWS_FEED_FAIL,
-        payload: message,
-      });
-    }
-  };
-
 const listByUser = (id) => async (dispatch, getState) => {
   try {
-    dispatch({ type: POST_LIST_BY_USER_REQUEST });
+    dispatch({ type: POST_LOADING, payload: true });
 
     const {
       userLogin: { userInfo },
@@ -120,7 +69,11 @@ const listByUser = (id) => async (dispatch, getState) => {
 
     const { data } = await axios.get(`/api/posts/by/${id}`, config);
 
-    dispatch({ type: POST_LIST_BY_USER_SUCCESS, payload: data });
+    dispatch({ type: POST_LIST_BY_USER, payload: data });
+    dispatch({
+      type: POST_LOADING,
+      payload: false,
+    });
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -130,7 +83,7 @@ const listByUser = (id) => async (dispatch, getState) => {
       dispatch(logout());
     }
     dispatch({
-      type: POST_LIST_BY_USER_FAIL,
+      type: GLOBAL_ALERT,
       payload: message,
     });
   }
@@ -138,7 +91,7 @@ const listByUser = (id) => async (dispatch, getState) => {
 
 const createPost = (post) => async (dispatch, getState) => {
   try {
-    dispatch({ type: POST_CREATE_REQUEST });
+    dispatch({ type: POST_LOADING, payload: true });
 
     const {
       getCurrentUserDetails: { currentUserDetails },
@@ -159,8 +112,8 @@ const createPost = (post) => async (dispatch, getState) => {
       config,
     );
 
-    dispatch({ type: POST_CREATE_SUCCESS, payload: data });
-    dispatch({ type: UPDATE_POST_LIST, payload: data });
+    dispatch({ type: POST_CREATE, payload: data });
+    dispatch({ type: POST_LOADING, payload: false });
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -170,16 +123,15 @@ const createPost = (post) => async (dispatch, getState) => {
       dispatch(logout());
     }
     dispatch({
-      type: POST_CREATE_FAIL,
+      type: GLOBAL_ALERT,
       payload: message,
     });
   }
 };
 
 const removePost = (id) => async (dispatch, getState) => {
+  dispatch({ type: POST_REMOVE, payload: id });
   try {
-    dispatch({ type: POST_REMOVE_REQUEST });
-
     const { authCookie } = getState();
 
     const config = {
@@ -190,8 +142,6 @@ const removePost = (id) => async (dispatch, getState) => {
       },
     };
     await axios.delete(`/api/posts/${id}`, config);
-
-    dispatch({ type: POST_REMOVE_SUCCESS });
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -201,90 +151,23 @@ const removePost = (id) => async (dispatch, getState) => {
       dispatch(logout());
     }
     dispatch({
-      type: POST_REMOVE_FAIL,
+      type: GLOBAL_ALERT,
       payload: message,
     });
   }
 };
 
-const likePost = (postId, likeId) => async (dispatch, getState) => {
-  try {
-    dispatch({ type: POST_LIKE_REQUEST });
+const likePost =
+  (post, currentUser) => async (dispatch, getState) => {
+    const postId = post._id;
+    const currentUserId = currentUser._id;
 
-    const { authCookie } = getState();
-
-    const config = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Cookie: authCookie,
-      },
+    const newPost = {
+      ...post,
+      likes: [...post.likes, currentUser],
     };
-
-    const { data } = await axios.put(
-      "/api/posts/like",
-      { postId, likeId },
-      config,
-    );
-
-    dispatch({ type: POST_LIKE_SUCCESS, payload: data });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === "Not authorized, token failed") {
-      dispatch(logout());
-    }
-    dispatch({
-      type: POST_LIKE_FAIL,
-      payload: message,
-    });
-  }
-};
-
-const unlikePost =
-  (postId, unlikeId) => async (dispatch, getState) => {
+    dispatch({ type: POST_UPDATE, payload: newPost });
     try {
-      dispatch({ type: POST_UNLIKE_REQUEST });
-
-      const { authCookie } = getState();
-
-      const config = {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Cookie: authCookie,
-        },
-      };
-
-      const { data } = await axios.put(
-        "/api/posts/unlike",
-        { postId, unlikeId },
-        config,
-      );
-
-      dispatch({ type: POST_UNLIKE_SUCCESS, payload: data });
-    } catch (error) {
-      const message =
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message;
-      if (message === "Not authorized, token failed") {
-        dispatch(logout());
-      }
-      dispatch({
-        type: POST_UNLIKE_FAIL,
-        payload: message,
-      });
-    }
-  };
-
-const comment =
-  (userId, postId, text) => async (dispatch, getState) => {
-    try {
-      dispatch({ type: POST_COMMENT_REQUEST });
-
       const { authCookie } = getState();
 
       const config = {
@@ -296,12 +179,10 @@ const comment =
       };
 
       await axios.put(
-        "/api/posts/comment",
-        { userId, postId, comment: { text } },
+        "/api/posts/like",
+        { postId, likeId: currentUserId },
         config,
       );
-
-      dispatch({ type: POST_COMMENT_SUCCESS });
     } catch (error) {
       const message =
         error.response && error.response.data.message
@@ -311,16 +192,103 @@ const comment =
         dispatch(logout());
       }
       dispatch({
-        type: POST_COMMENT_FAIL,
+        type: GLOBAL_ALERT,
         payload: message,
       });
     }
   };
 
-const uncomment = (postId, _id) => async (dispatch, getState) => {
-  try {
-    dispatch({ type: POST_UNCOMMENT_REQUEST });
+const unlikePost =
+  (post, currentUser) => async (dispatch, getState) => {
+    const postId = post._id;
+    const currentUserId = currentUser._id;
 
+    const newPost = {
+      ...post,
+      likes: post.likes.filter((like) => like._id !== currentUserId),
+    };
+    dispatch({ type: POST_UPDATE, payload: newPost });
+    try {
+      const { authCookie } = getState();
+
+      const config = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Cookie: authCookie,
+        },
+      };
+
+      await axios.put(
+        "/api/posts/unlike",
+        { postId, unlikeId: currentUserId },
+        config,
+      );
+    } catch (error) {
+      const message =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      if (message === "Not authorized, token failed") {
+        dispatch(logout());
+      }
+      dispatch({
+        type: GLOBAL_ALERT,
+        payload: message,
+      });
+    }
+  };
+
+const comment =
+  (userId, newComment, post) => async (dispatch, getState) => {
+    const postId = post._id;
+    const { text } = newComment;
+    const newPost = {
+      ...post,
+      comments: [...post.comments, newComment],
+    };
+    dispatch({ type: POST_UPDATE, payload: newPost });
+    try {
+      const { authCookie } = getState();
+
+      const config = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Cookie: authCookie,
+        },
+      };
+
+      const { data } = await axios.put(
+        "/api/posts/comment",
+        { userId, postId, comment: { text } },
+        config,
+      );
+    } catch (error) {
+      const message =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      if (message === "Not authorized, token failed") {
+        dispatch(logout());
+      }
+      dispatch({
+        type: GLOBAL_ALERT,
+        payload: message,
+      });
+    }
+  };
+
+const uncomment = (post, commentId) => async (dispatch, getState) => {
+  const postId = post._id;
+  const newPost = {
+    ...post,
+    comments: post.comments.filter(
+      (comment) => comment._id !== commentId,
+    ),
+  };
+  dispatch({ type: POST_UPDATE, payload: newPost });
+  try {
     const { authCookie } = getState();
 
     const config = {
@@ -333,11 +301,9 @@ const uncomment = (postId, _id) => async (dispatch, getState) => {
 
     await axios.put(
       "/api/posts/uncomment",
-      { postId, comment: { _id } },
+      { postId, comment: { _id: commentId } },
       config,
     );
-
-    dispatch({ type: POST_UNCOMMENT_SUCCESS });
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -347,7 +313,7 @@ const uncomment = (postId, _id) => async (dispatch, getState) => {
       dispatch(logout());
     }
     dispatch({
-      type: POST_UNCOMMENT_FAIL,
+      type: GLOBAL_ALERT,
       payload: message,
     });
   }
@@ -358,7 +324,6 @@ export {
   listByUser,
   createPost,
   removePost,
-  updateListNewsFeed,
   likePost,
   unlikePost,
   comment,

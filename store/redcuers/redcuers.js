@@ -5,22 +5,14 @@ import {
   userRegisterReducer,
   authCookieReducer,
 } from "./authReducers";
-import {
-  postListNewsFeedReducer,
-  postListByUserReducer,
-  postCreateReducer,
-  postRemoveReducer,
-} from "./postReducers";
+import postReducer from "./postReducers";
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   getCurrentUserDetails: getCurrentUserDetailsReducer,
-  postListNewsFeed: postListNewsFeedReducer,
-  postListByUser: postListByUserReducer,
-  postCreate: postCreateReducer,
-  postRemove: postRemoveReducer,
   authCookie: authCookieReducer,
+  postReducer,
 });
 
 export default reducer;

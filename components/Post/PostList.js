@@ -6,19 +6,16 @@ import Error from "../Layout/Error";
 
 const PostList = () => {
   const [postList, setPostList] = useState([]);
-  const postListNewsFeed = useSelector(
-    (state) => state.postListNewsFeed,
-  );
-  const { loading, posts, error } = postListNewsFeed;
+  const { postReducer } = useSelector((state) => state);
   useEffect(() => {
-    setPostList(posts);
-  }, [posts]);
+    setPostList(postReducer.posts);
+  }, [postReducer]);
 
   return (
     <div>
-      {loading && <Loader />}
-      {error && <Error />}
-      {posts &&
+      {postReducer.loading && <Loader />}
+      {/* { && <Error />} */}
+      {postReducer.posts &&
         postList.map((item) => <Post post={item} key={item._id} />)}
     </div>
   );
