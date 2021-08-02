@@ -41,8 +41,7 @@ const Login = () => {
     password: "",
   });
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { loading, error, userInfo } = userLogin;
+  const { userReducer, alert } = useSelector((state) => state);
 
   const handleChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
@@ -54,7 +53,7 @@ const Login = () => {
   return (
     <Card className={classes.loginContainer}>
       <h1 style={{ marginLeft: "20px" }}>Login</h1>
-      {error && <Error errorMessage={error} />}
+      {alert.error && <Error errorMessage={error} />}
       <CardContent>
         <TextField
           id="email"
@@ -84,7 +83,7 @@ const Login = () => {
             onClick={handleSubmit}
             className={classes.submit}
           >
-            {loading ? <Loader /> : "Submit"}
+            {userReducer.loading ? <Loader /> : "Submit"}
           </Button>
         </CardActions>
       </CardContent>

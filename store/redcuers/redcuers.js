@@ -1,17 +1,11 @@
 import { combineReducers } from "redux";
-import {
-  getCurrentUserDetailsReducer,
-  userLoginReducer,
-  userRegisterReducer,
-  authCookieReducer,
-} from "./authReducers";
+import userReducer from "./authReducers";
 import postReducer from "./postReducers";
+import alert from "./alertReducer";
 
 const reducer = combineReducers({
-  userLogin: userLoginReducer,
-  userRegister: userRegisterReducer,
-  getCurrentUserDetails: getCurrentUserDetailsReducer,
-  authCookie: authCookieReducer,
+  alert,
+  userReducer,
   postReducer,
 });
 

@@ -35,10 +35,7 @@ const useStyles = makeStyles((theme) => ({
 const Register = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const userRegister = useSelector((state) => state.userRegister);
-  const { loading, error } = userRegister;
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
+  const { userReducer, alert } = useSelector((state) => state);
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -63,7 +60,7 @@ const Register = () => {
   return (
     <Card className={classes.registerContainer}>
       <h1 style={{ marginLeft: "20px" }}>Register</h1>
-      {error && "ERROR"}
+      {alert.error && "ERROR"}
       <CardContent>
         <TextField
           id="name"
@@ -114,7 +111,7 @@ const Register = () => {
             onClick={handleSubmit}
             className={classes.submit}
           >
-            {loading ? <Loader /> : "Submit"}
+            {userReducer.loading ? <Loader /> : "Submit"}
           </Button>
         </CardActions>
       </CardContent>

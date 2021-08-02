@@ -31,20 +31,18 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Profile() {
   const classes = useStyles();
-  const { loading, error, currentUserDetails } = useSelector(
-    (state) => state.getCurrentUserDetails,
-  );
+  const { userReducer, alert } = useSelector((state) => state);
   return (
     <Card className={classes.root}>
       <CardHeader
         avatar={
           <Avatar
             alt="Avatar Picture"
-            src={`../../dist/img/users/${currentUserDetails.photo}`}
+            src={`../../dist/img/users/${userReducer.currentUserDetails.photo}`}
           />
         }
-        title={currentUserDetails?.name}
-        subheader={currentUserDetails?.email}
+        title={userReducer.currentUserDetails.name}
+        subheader={userReducer.currentUserDetails.email}
       />
       <CardContent>
         <Typography
@@ -52,12 +50,13 @@ export default function Profile() {
           color="textSecondary"
           component="p"
         >
-          {loading ? (
+          {userReducer.loading ? (
             <Loader />
-          ) : error ? (
+          ) : alert.error ? (
             <Error />
           ) : (
-            currentUserDetails && currentUserDetails.about
+            userReducer.currentUserDetails &&
+            userReducer.currentUserDetails.about
           )}
         </Typography>
       </CardContent>

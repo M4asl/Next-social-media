@@ -69,12 +69,10 @@ const Post = ({ post }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [like, setLike] = useState(false);
-  const { currentUserDetails } = useSelector(
-    (state) => state.getCurrentUserDetails,
-  );
+  const { userReducer } = useSelector((state) => state);
 
   const clickLikeButton = (callApi) => {
-    dispatch(callApi(post, currentUserDetails));
+    dispatch(callApi(post, userReducer.currentUserDetails));
     setLike(!like);
   };
 
@@ -87,7 +85,7 @@ const Post = ({ post }) => {
 
   const checkLike = (post) => {
     const matchFollowers = post?.likes.some(
-      (like) => like._id == currentUserDetails._id,
+      (like) => like._id == userReducer.currentUserDetails._id,
     );
     return matchFollowers;
   };

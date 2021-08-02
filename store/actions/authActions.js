@@ -4,25 +4,22 @@ import absoluteUrl from "next-absolute-url";
 import Router from "next/router";
 
 import {
-  CURRENT_USER_PROFILE_DETAILS_FAIL,
-  CURRENT_USER_PROFILE_DETAILS_REQUEST,
-  CURRENT_USER_PROFILE_DETAILS_SUCCESS,
-  USER_LOGIN_FAIL,
-  USER_LOGIN_REQUEST,
-  USER_LOGIN_SUCCESS,
+  CURRENT_USER_PROFILE_DETAILS,
+  USER_LOGIN_DETAILS,
   USER_LOGOUT,
-  USER_REGISTER_FAIL,
-  USER_REGISTER_REQUEST,
-  USER_REGISTER_SUCCESS,
+  USER_REGISTER_DETAILS,
+  USER_LOADING_ACTION,
   AUTHENTICATE,
   DEAUTHENTICATE,
 } from "../constants/authConstants";
+import { GLOBAL_ALERT } from "../constants/globalConstants";
 
 const register =
   (name, email, password, passwordConfirm) => async (dispatch) => {
     try {
       dispatch({
-        type: USER_REGISTER_REQUEST,
+        type: USER_LOADING_ACTION,
+        payload: true,
       });
 
       const config = {
@@ -38,12 +35,17 @@ const register =
       );
 
       dispatch({
-        type: USER_REGISTER_SUCCESS,
+        type: USER_LOADING_ACTION,
+        payload: false,
+      });
+
+      dispatch({
+        type: USER_REGISTER_DETAILS,
         payload: data,
       });
 
       dispatch({
-        type: USER_LOGIN_SUCCESS,
+        type: USER_LOGIN_DETAILS,
         payload: data,
       });
 
@@ -52,7 +54,7 @@ const register =
       dispatch({ type: AUTHENTICATE, payload: data.token });
     } catch (error) {
       dispatch({
-        type: USER_REGISTER_FAIL,
+        type: GLOBAL_ALERT,
         payload:
           error.response && error.response.data.message
             ? error.response.data.message
@@ -64,7 +66,8 @@ const register =
 const login = (email, password) => async (dispatch) => {
   try {
     dispatch({
-      type: USER_LOGIN_REQUEST,
+      type: USER_LOADING_ACTION,
+      payload: true,
     });
 
     const config = {
@@ -80,7 +83,12 @@ const login = (email, password) => async (dispatch) => {
     );
 
     dispatch({
-      type: USER_LOGIN_SUCCESS,
+      type: USER_LOADING_ACTION,
+      payload: false,
+    });
+
+    dispatch({
+      type: USER_LOGIN_DETAILS,
       payload: data,
     });
 
@@ -89,7 +97,7 @@ const login = (email, password) => async (dispatch) => {
     dispatch({ type: AUTHENTICATE, payload: data.token });
   } catch (error) {
     dispatch({
-      type: USER_LOGIN_FAIL,
+      type: GLOBAL_ALERT,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -101,8 +109,6 @@ const login = (email, password) => async (dispatch) => {
 const logout = () => (dispatch) => {
   removeCookie("token");
   dispatch({ type: USER_LOGOUT });
-  dispatch({ type: USER_DETAILS_RESET });
-  dispatch({ type: USER_LIST_RESET });
   Router.push("/login");
   dispatch({ type: DEAUTHENTICATE });
 };
@@ -134,7 +140,8 @@ const getCurrentUserDetails =
       const { origin } = absoluteUrl(req);
 
       dispatch({
-        type: CURRENT_USER_PROFILE_DETAILS_REQUEST,
+        type: USER_LOADING_ACTION,
+        payload: true,
       });
 
       const config = {
@@ -149,12 +156,17 @@ const getCurrentUserDetails =
       );
 
       dispatch({
-        type: CURRENT_USER_PROFILE_DETAILS_SUCCESS,
+        type: USER_LOADING_ACTION,
+        payload: false,
+      });
+
+      dispatch({
+        type: CURRENT_USER_PROFILE_DETAILS,
         payload: data,
       });
     } catch (error) {
       dispatch({
-        type: CURRENT_USER_PROFILE_DETAILS_FAIL,
+        type: GLOBAL_ALERT,
         payload:
           error.response && error.response.data.message
             ? error.response.data.message

@@ -66,9 +66,7 @@ const Comments = ({ comments, post }) => {
   const [text, setText] = useState("");
   const [commentsList, setCommentsList] = useState(comments);
   const dispatch = useDispatch();
-  const { currentUserDetails } = useSelector(
-    (state) => state.getCurrentUserDetails,
-  );
+  const { userReducer } = useSelector((state) => state);
 
   const handleChange = (event) => {
     setText(event.target.value);
@@ -77,11 +75,13 @@ const Comments = ({ comments, post }) => {
     if (event.keyCode === 13 && event.target.value) {
       const newComment = {
         text,
-        postedBy: currentUserDetails,
+        postedBy: userReducer.currentUserDetails,
         created: new Date().toISOString,
       };
       event.preventDefault();
-      dispatch(comment(currentUserDetails._id, newComment, post));
+      dispatch(
+        comment(userReducer.currentUserDetails._id, newComment, post),
+      );
       setText("");
     }
   };
@@ -121,7 +121,7 @@ const Comments = ({ comments, post }) => {
                       color="textPrimary"
                     >
                       {comment.text}
-                      {currentUserDetails._id ===
+                      {userReducer.currentUserDetails._id ===
                         comment.postedBy._id && (
                         <Button onClick={deleteComment(comment)}>
                           <DeleteOutlineIcon />
@@ -137,7 +137,7 @@ const Comments = ({ comments, post }) => {
       <div className={classes.addCommentBox}>
         <Avatar
           alt="Avatar Picture"
-          src={`../../dist/img/users/${currentUserDetails.photo}`}
+          src={`../../dist/img/users/${userReducer.currentUserDetails.photo}`}
         />
         <Input
           label="Text something..."

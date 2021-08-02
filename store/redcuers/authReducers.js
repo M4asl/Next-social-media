@@ -1,75 +1,60 @@
 import {
-  CURRENT_USER_PROFILE_DETAILS_FAIL,
-  CURRENT_USER_PROFILE_DETAILS_REQUEST,
-  CURRENT_USER_PROFILE_DETAILS_SUCCESS,
-  USER_LOGIN_FAIL,
-  USER_LOGIN_REQUEST,
-  USER_LOGIN_SUCCESS,
+  CURRENT_USER_PROFILE_DETAILS,
+  USER_LOGIN_DETAILS,
   USER_LOGOUT,
-  USER_REGISTER_FAIL,
-  USER_REGISTER_REQUEST,
-  USER_REGISTER_SUCCESS,
+  USER_REGISTER_DETAILS,
   AUTHENTICATE,
   DEAUTHENTICATE,
+  USER_LOADING_ACTION,
 } from "../constants/authConstants";
 
-const userRegisterReducer = (state = {}, action) => {
-  switch (action.type) {
-    case USER_REGISTER_REQUEST:
-      return { loading: true };
-    case USER_REGISTER_SUCCESS:
-      return { loading: false, userInfo: action.payload };
-    case USER_REGISTER_FAIL:
-      return { loading: false, error: action.payload };
-    case USER_LOGOUT:
-      return {};
-    default:
-      return state;
-  }
+const initialState = {
+  userInfo: {},
+  currentUserDetails: {},
+  loading: false,
+  token: null,
 };
 
-const userLoginReducer = (state = {}, action) => {
+const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    case USER_LOGIN_REQUEST:
-      return { loading: true };
-    case USER_LOGIN_SUCCESS:
-      return { loading: false, userInfo: action.payload };
-    case USER_LOGIN_FAIL:
-      return { loading: false, error: action.payload };
-    case USER_LOGOUT:
-      return {};
-    default:
-      return state;
-  }
-};
-
-const authCookieReducer = (state = { token: null }, action) => {
-  switch (action.type) {
+    case USER_LOADING_ACTION:
+      return {
+        ...state,
+        loading: action.payload,
+      };
+    case USER_LOGIN_DETAILS:
+      return {
+        ...state,
+        userInfo: action.payload,
+      };
+    case USER_REGISTER_DETAILS:
+      return {
+        ...state,
+        userInfo: action.payload,
+      };
+    case CURRENT_USER_PROFILE_DETAILS:
+      return {
+        ...state,
+        currentUserDetails: action.payload,
+      };
     case AUTHENTICATE:
-      return { ...state, token: action.payload };
+      return {
+        ...state,
+        token: action.payload,
+      };
     case DEAUTHENTICATE:
-      return { token: null };
+      return {
+        ...state,
+        token: null,
+      };
+    case USER_LOGOUT:
+      return {
+        userInfo: {},
+        token: null,
+      };
     default:
       return state;
   }
 };
 
-const getCurrentUserDetailsReducer = (state = {}, action) => {
-  switch (action.type) {
-    case CURRENT_USER_PROFILE_DETAILS_REQUEST:
-      return { loading: true };
-    case CURRENT_USER_PROFILE_DETAILS_SUCCESS:
-      return { loading: false, currentUserDetails: action.payload };
-    case CURRENT_USER_PROFILE_DETAILS_FAIL:
-      return { loading: false, error: action.payload };
-    default:
-      return state;
-  }
-};
-
-export {
-  userRegisterReducer,
-  userLoginReducer,
-  getCurrentUserDetailsReducer,
-  authCookieReducer,
-};
+export default userReducer;

@@ -7,18 +7,17 @@ import Loader from "./Loader";
 import Error from "./Error";
 
 const Layout = ({ children }) => {
-  const { loading, error, currentUserDetails } = useSelector(
-    (state) => state.getCurrentUserDetails,
-  );
+  const { userReducer, alert } = useSelector((state) => state);
+
   return (
     <>
       <HeadTags />
-      {loading ? (
+      {userReducer.loading ? (
         <Loader />
-      ) : error ? (
+      ) : alert.error ? (
         <Error />
       ) : (
-        currentUserDetails && <Navbar />
+        userReducer.currentUserDetails && <Navbar />
       )}
       {children}
       <Background />

@@ -88,9 +88,7 @@ const Input = withStyles({
 
 export default function NewPost() {
   const classes = useStyles();
-  const { currentUserDetails } = useSelector(
-    (state) => state.getCurrentUserDetails,
-  );
+  const { userReducer } = useSelector((state) => state);
   const [values, setValues] = useState({
     text: "",
     photo: "",
@@ -117,7 +115,7 @@ export default function NewPost() {
         avatar={
           <Avatar
             alt="Avatar Picture"
-            src={`../../dist/img/users/${currentUserDetails.photo}`}
+            src={`../../dist/img/users/${userReducer.currentUserDetails.photo}`}
           />
         }
         title="M4asl"
