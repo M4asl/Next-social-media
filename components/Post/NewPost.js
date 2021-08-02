@@ -118,8 +118,8 @@ export default function NewPost() {
             src={`../../dist/img/users/${userReducer.currentUserDetails.photo}`}
           />
         }
-        title="M4asl"
-        subheader="Mateusz Masłowiec"
+        title={userReducer.currentUserDetails.name}
+        subheader={userReducer.currentUserDetails.email}
       />
       <Divider className={classes.divider} />
       <CardContent>

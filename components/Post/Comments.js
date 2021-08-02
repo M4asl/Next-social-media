@@ -33,6 +33,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
   },
+  primaryText: {
+    display: "flex",
+    alignItems: "center",
+  },
 }));
 
 const Input = withStyles({
@@ -111,7 +115,17 @@ const Comments = ({ comments, post }) => {
                 />
               </ListItemAvatar>
               <ListItemText
-                primary={comment.postedBy.name}
+                primary={
+                  <div className={classes.primaryText}>
+                    {comment.postedBy.name}
+                    {userReducer.currentUserDetails._id ===
+                      comment.postedBy._id && (
+                      <Button onClick={deleteComment(comment)}>
+                        <DeleteOutlineIcon />
+                      </Button>
+                    )}
+                  </div>
+                }
                 secondary={
                   <>
                     <Typography
@@ -121,12 +135,6 @@ const Comments = ({ comments, post }) => {
                       color="textPrimary"
                     >
                       {comment.text}
-                      {userReducer.currentUserDetails._id ===
-                        comment.postedBy._id && (
-                        <Button onClick={deleteComment(comment)}>
-                          <DeleteOutlineIcon />
-                        </Button>
-                      )}
                     </Typography>
                   </>
                 }

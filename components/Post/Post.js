@@ -13,9 +13,11 @@ import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import Moment from "react-moment";
 import { useDispatch, useSelector } from "react-redux";
+import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import {
   likePost,
   unlikePost,
+  removePost,
 } from "../../store/actions/postActions";
 import Comments from "./Comments";
 
@@ -61,6 +63,7 @@ const PostHeader = withStyles({
     "& .MuiCardHeader-content": {
       display: "flex",
       justifyContent: "space-between",
+      alignItems: "center",
     },
   },
 })(CardHeader);
@@ -69,7 +72,7 @@ const Post = ({ post }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [like, setLike] = useState(false);
-  const { userReducer } = useSelector((state) => state);
+  const { userReducer, postReducer } = useSelector((state) => state);
 
   const clickLikeButton = (callApi) => {
     dispatch(callApi(post, userReducer.currentUserDetails));
@@ -88,6 +91,10 @@ const Post = ({ post }) => {
       (like) => like._id == userReducer.currentUserDetails._id,
     );
     return matchFollowers;
+  };
+
+  const deletePost = (postId) => (event) => {
+    dispatch(removePost(postId));
   };
 
   useEffect(() => {
@@ -114,9 +121,17 @@ const Post = ({ post }) => {
           }
           title={post.postedBy.name}
           subheader={
-            <Moment fromNow style={{ color: "#BFBFBF" }}>
-              {post.created}
-            </Moment>
+            <>
+              <Moment fromNow style={{ color: "#BFBFBF" }}>
+                {post.created}
+              </Moment>
+              {userReducer.currentUserDetails._id ===
+                post.postedBy._id && (
+                <Button onClick={deletePost(post._id)}>
+                  <DeleteOutlineIcon />
+                </Button>
+              )}
+            </>
           }
         />
         <Divider className={classes.divider} />
