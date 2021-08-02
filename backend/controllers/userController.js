@@ -3,7 +3,7 @@ const sharp = require("sharp");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/AppError");
-const { createSendToken } = require("./authController");
+const { createSendToken } = require("../utils/createToken");
 
 const multerStorage = multer.memoryStorage();
 

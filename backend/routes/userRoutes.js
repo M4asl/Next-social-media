@@ -19,7 +19,7 @@ const {
 
 const router = express.Router();
 
-router.route("/api/users").get(getAllUsers);
+router.route("/api/users").get(protect, getAllUsers);
 
 router
   .route("/api/users/findpeople/:userId")

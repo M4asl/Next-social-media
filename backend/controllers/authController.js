@@ -3,34 +3,7 @@ const { promisify } = require("util");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/AppError");
-
-const signToken = (id) =>
-  jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-
-const createSendToken = (user, statusCode, req, res) => {
-  const token = signToken(user._id);
-
-  res.cookie("token", token, {
-    httpOnly: true,
-    maxAge: 1000 * 3 * 24 * 60 * 60,
-  });
-
-  user.password = undefined;
-
-  const { _id, name, email, created, about, photo } = user;
-
-  res.status(statusCode).json({
-    _id,
-    name,
-    email,
-    created,
-    about,
-    photo,
-    token,
-  });
-};
+const { createSendToken } = require("../utils/createToken");
 
 exports.register = catchAsync(async (req, res, next) => {
   const { name, email, password, passwordConfirm } = req.body;
