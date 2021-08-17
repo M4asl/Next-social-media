@@ -1,10 +1,12 @@
 import { combineReducers } from "redux";
-import userReducer from "./authReducers";
+import authReducer from "./authReducers";
+import userReducer from "./userReducers";
 import postReducer from "./postReducers";
-import alert from "./alertReducer";
+import alert from "./alertReducers";
 
 const reducer = combineReducers({
   alert,
+  authReducer,
   userReducer,
   postReducer,
 });

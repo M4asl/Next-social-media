@@ -55,15 +55,13 @@ const listByUser = (id) => async (dispatch, getState) => {
   try {
     dispatch({ type: POST_LOADING, payload: true });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+    const { authCookie } = getState();
 
     const config = {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
+        Cookie: authCookie,
       },
     };
 

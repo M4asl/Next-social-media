@@ -15,7 +15,7 @@ const initialState = {
   token: null,
 };
 
-const userReducer = (state = initialState, action) => {
+const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case USER_LOADING_ACTION:
       return {
@@ -57,4 +57,4 @@ const userReducer = (state = initialState, action) => {
   }
 };
 
-export default userReducer;
+export default authReducer;
