@@ -39,7 +39,7 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.getAllUsers = catchAsync(async (req, res) => {
+exports.getAllUsers = catchAsync(async (req, res, next) => {
   let searchObj = req.query;
 
   if (req.query.search !== undefined) {
@@ -54,6 +54,13 @@ exports.getAllUsers = catchAsync(async (req, res) => {
   const users = await User.find(searchObj).select(
     "name email created photo",
   );
+
+  if (req.query.search && users.length === 0) {
+    return next(
+      new AppError("Not found user with this name or email", 404),
+    );
+  }
+
   res.status(200).json(users);
 });
 
