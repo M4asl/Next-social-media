@@ -7,17 +7,18 @@ import Loader from "./Loader";
 import Error from "./Error";
 
 const Layout = ({ children }) => {
-  const { userReducer, alert } = useSelector((state) => state);
-
+  const { authReducer, alert } = useSelector((state) => state);
   return (
     <>
       <HeadTags />
-      {userReducer.loading ? (
+      {authReducer.loading ? (
         <Loader />
       ) : alert.error ? (
         <Error />
       ) : (
-        userReducer.currentUserDetails && <Navbar />
+        Object.keys(authReducer.currentUserDetails).length > 1 && (
+          <Navbar />
+        )
       )}
       {children}
       <Background />
