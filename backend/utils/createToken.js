@@ -15,7 +15,18 @@ exports.createSendToken = (user, statusCode, req, res) => {
 
   user.password = undefined;
 
-  const { _id, name, email, created, about, photo } = user;
+  const {
+    _id,
+    name,
+    email,
+    created,
+    about,
+    photo,
+    facebook,
+    instagram,
+    twitter,
+    youtube,
+  } = user;
 
   res.status(statusCode).json({
     _id,
@@ -23,6 +34,10 @@ exports.createSendToken = (user, statusCode, req, res) => {
     email,
     created,
     about,
+    facebook,
+    instagram,
+    twitter,
+    youtube,
     photo,
     token,
   });

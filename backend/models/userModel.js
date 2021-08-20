@@ -39,6 +39,22 @@ const UserSchema = new Schema({
     type: String,
     trim: true,
   },
+  facebook: {
+    type: String,
+    trim: true,
+  },
+  instagram: {
+    type: String,
+    trim: true,
+  },
+  twitter: {
+    type: String,
+    trim: true,
+  },
+  youtube: {
+    type: String,
+    trim: true,
+  },
   photo: {
     type: String,
     default: "default.jpg",

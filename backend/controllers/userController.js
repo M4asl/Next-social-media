@@ -93,9 +93,11 @@ exports.updateUser = catchAsync(async (req, res, next) => {
   }
   const filteredBodyField = filterObjField(
     req.body,
-    "name",
-    "email",
     "about",
+    "facebook",
+    "instagram",
+    "twitter",
+    "youtube",
   );
   if (req.file) filteredBodyField.photo = req.file.filename;
 
