@@ -72,10 +72,10 @@ const Post = ({ post }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [like, setLike] = useState(false);
-  const { userReducer, postReducer } = useSelector((state) => state);
+  const { authReducer } = useSelector((state) => state);
 
   const clickLikeButton = (callApi) => {
-    dispatch(callApi(post, userReducer.currentUserDetails));
+    dispatch(callApi(post, authReducer.currentUserDetails));
     setLike(!like);
   };
 
@@ -88,7 +88,7 @@ const Post = ({ post }) => {
 
   const checkLike = (post) => {
     const matchFollowers = post?.likes.some(
-      (like) => like._id == userReducer.currentUserDetails._id,
+      (like) => like._id == authReducer.currentUserDetails._id,
     );
     return matchFollowers;
   };
@@ -125,7 +125,7 @@ const Post = ({ post }) => {
               <Moment fromNow style={{ color: "#BFBFBF" }}>
                 {post.created}
               </Moment>
-              {userReducer.currentUserDetails._id ===
+              {authReducer.currentUserDetails._id ===
                 post.postedBy._id && (
                 <Button onClick={deletePost(post._id)}>
                   <DeleteOutlineIcon />

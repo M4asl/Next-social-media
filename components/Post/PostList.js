@@ -4,9 +4,8 @@ import Post from "./Post";
 import Loader from "../Layout/Loader";
 import Error from "../Layout/Error";
 
-const PostList = () => {
+const PostList = ({ postReducer }) => {
   const [postList, setPostList] = useState([]);
-  const { postReducer } = useSelector((state) => state);
   useEffect(() => {
     setPostList(postReducer.posts);
   }, [postReducer]);
