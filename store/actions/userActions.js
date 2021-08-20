@@ -232,43 +232,45 @@ const unfollow =
     }
   };
 
-const findPeople = () => async (dispatch, getState) => {
-  try {
-    dispatch({ type: USER_LOADING, payload: true });
+const findPeople =
+  (authCookie, req) => async (dispatch, getState) => {
+    try {
+      const { origin } = absoluteUrl(req);
 
-    const {
-      getCurrentUserDetails: { currentUserDetails },
-      authCookie,
-    } = getState();
+      dispatch({ type: USER_LOADING, payload: true });
 
-    const config = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Cookie: authCookie,
-      },
-    };
+      const {
+        authReducer: { currentUserDetails },
+      } = getState();
 
-    const { data } = await axios.get(
-      `/api/users/findpeople/${currentUserDetails._id}`,
-      config,
-    );
+      const config = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Cookie: authCookie,
+        },
+      };
 
-    dispatch({ type: USER_FIND_PEOPLE, payload: data });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === "Not authorized, token failed") {
-      dispatch(logout());
+      const { data } = await axios.get(
+        `${origin}/api/users/findpeople/${currentUserDetails._id}`,
+        config,
+      );
+
+      dispatch({ type: USER_FIND_PEOPLE, payload: data });
+    } catch (error) {
+      const message =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      if (message === "Not authorized, token failed") {
+        dispatch(logout());
+      }
+      dispatch({
+        type: GLOBAL_ALERT,
+        payload: message,
+      });
     }
-    dispatch({
-      type: GLOBAL_ALERT,
-      payload: message,
-    });
-  }
-};
+  };
 
 export {
   getUsersList,

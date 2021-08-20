@@ -12,6 +12,7 @@ import {
 const initialState = {
   loading: false,
   users: [],
+  usersToFollow: [],
   user: {},
   follow: {},
   unfollow: {},
@@ -38,7 +39,7 @@ const userReducer = (state = initialState, action) => {
     case USER_FIND_PEOPLE:
       return {
         ...state,
-        users: action.payload,
+        usersToFollow: action.payload,
       };
     case USER_EDIT_PROFILE:
       return {

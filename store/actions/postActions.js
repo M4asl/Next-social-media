@@ -51,11 +51,10 @@ const listNewsFeed = (authCookie, req) => async (dispatch) => {
   }
 };
 
-const listByUser = (id) => async (dispatch, getState) => {
+const listByUser = (authCookie, id, req) => async (dispatch) => {
   try {
+    const { origin } = absoluteUrl(req);
     dispatch({ type: POST_LOADING, payload: true });
-
-    const { authCookie } = getState();
 
     const config = {
       headers: {
@@ -65,7 +64,10 @@ const listByUser = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/posts/by/${id}`, config);
+    const { data } = await axios.get(
+      `${origin}/api/posts/by/${id}`,
+      config,
+    );
 
     dispatch({ type: POST_LIST_BY_USER, payload: data });
     dispatch({

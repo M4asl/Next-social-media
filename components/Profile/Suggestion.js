@@ -1,50 +1,56 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
+import React, { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import {
+  Avatar,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 230,
+    maxHeight: "48vh",
     zIndex: 100,
-    position: "fixed",
-    top: "61%",
+    position: "sticky",
+    top: "50%",
     left: "6%",
     color: "#141414",
-    borderRadius: "20px",
+    borderRadius: "15px",
     background: "rgba( 255, 255, 255, 0.25 )",
     boxShadow: "0 2px 12px 0 rgba( 255, 255, 255, 0.2 )",
     backdropFilter: "blur( 10.0px )",
     border: "1px solid rgba( 255, 255, 255, 0.18 )",
+    padding: "8px",
+    overflowY: "scroll",
   },
-  avatar: {
-    backgroundColor: red[500],
+  backgroundChat: {
+    background: theme.palette.background.secondary,
+    borderRadius: "15px",
   },
 }));
 
-export default function Suggestion() {
+export default function Suggestion({ userReducer }) {
   const classes = useStyles();
 
   return (
     <Card className={classes.root}>
-      <CardHeader
-        avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            R
-          </Avatar>
-        }
-        title="M4asl"
-        subheader="Mateusz Masłowiec"
-      />
-      <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat libero dolores adipisci iure ipsum. Quae tenetur odit laudantium debitis consectetur, nemo ullam, quos unde vitae fuga ex repudiandae fugiat autem cumque aspernatur architecto delectus dolor?
-        </Typography>
-      </CardContent>
+      {userReducer.usersToFollow.length > 0
+        ? userReducer.usersToFollow.map((user) => (
+            <List key={user._id}>
+              <ListItem className={classes.backgroundChat}>
+                <ListItemAvatar>
+                  <Avatar
+                    alt="Avatar Picture"
+                    src={`../../dist/img/users/${user.photo}`}
+                  />
+                </ListItemAvatar>
+                <ListItemText primary={user.name} />
+              </ListItem>
+            </List>
+          ))
+        : "No users"}
     </Card>
   );
 }
