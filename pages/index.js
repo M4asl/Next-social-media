@@ -11,11 +11,11 @@ import ChatColumn from "../components/Chats/ChatColumn";
 import PostList from "../components/Post/PostList";
 import { wrapper } from "../store/store";
 import { listNewsFeed } from "../store/actions/postActions";
+import { authCookie } from "../store/actions/authActions";
 import {
+  findPeople,
   getCurrentUserDetails,
-  authCookie,
-} from "../store/actions/authActions";
-import { findPeople } from "../store/actions/userActions";
+} from "../store/actions/userActions";
 
 const useStyles = makeStyles((theme) => ({
   "@global": {
@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
 function Home() {
   const classes = useStyles();
   const { postReducer, userReducer } = useSelector((state) => state);
+
   return (
     <div className={classes.root}>
       <Grid container direction="row" justify="space-between">

@@ -88,7 +88,7 @@ const Input = withStyles({
 
 export default function NewPost() {
   const classes = useStyles();
-  const { authReducer } = useSelector((state) => state);
+  const { userReducer } = useSelector((state) => state);
   const [values, setValues] = useState({
     text: "",
     photo: "",
@@ -115,11 +115,11 @@ export default function NewPost() {
         avatar={
           <Avatar
             alt="Avatar Picture"
-            src={`../../dist/img/users/${authReducer.currentUserDetails.photo}`}
+            src={`../../dist/img/users/${userReducer.currentUserDetails.photo}`}
           />
         }
-        title={authReducer.currentUserDetails.name}
-        subheader={authReducer.currentUserDetails.email}
+        title={userReducer.currentUserDetails.name}
+        subheader={userReducer.currentUserDetails.email}
       />
       <Divider className={classes.divider} />
       <CardContent>
