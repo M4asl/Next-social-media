@@ -32,11 +32,7 @@ const authReducer = (state = initialState, action) => {
         ...state,
         userInfo: action.payload,
       };
-    case CURRENT_USER_PROFILE_DETAILS:
-      return {
-        ...state,
-        currentUserDetails: action.payload,
-      };
+
     case AUTHENTICATE:
       return {
         ...state,

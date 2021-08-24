@@ -9,10 +9,52 @@ import {
   USER_FOLLOW,
   USER_UNFOLLOW,
   USER_DETAILS,
+  CURRENT_USER_PROFILE_DETAILS,
 } from "../constants/userConstants";
 
 import { GLOBAL_ALERT } from "../constants/globalConstants";
 import { logout } from "./authActions";
+
+const getCurrentUserDetails =
+  (authCookie, req) => async (dispatch) => {
+    try {
+      const { origin } = absoluteUrl(req);
+
+      dispatch({
+        type: USER_LOADING,
+        payload: true,
+      });
+
+      const config = {
+        headers: {
+          Cookie: authCookie,
+        },
+      };
+
+      const { data } = await axios.get(
+        `${origin}/api/auth/me`,
+        config,
+      );
+
+      dispatch({
+        type: USER_LOADING,
+        payload: false,
+      });
+
+      dispatch({
+        type: CURRENT_USER_PROFILE_DETAILS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: GLOBAL_ALERT,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 const getUsersList =
   (userData = "", authCookie, req) =>
@@ -240,7 +282,7 @@ const findPeople =
       dispatch({ type: USER_LOADING, payload: true });
 
       const {
-        authReducer: { currentUserDetails },
+        userReducer: { currentUserDetails },
       } = getState();
 
       const config = {
@@ -255,6 +297,8 @@ const findPeople =
         `${origin}/api/users/findpeople/${currentUserDetails._id}`,
         config,
       );
+
+      dispatch({ type: USER_LOADING, payload: false });
 
       dispatch({ type: USER_FIND_PEOPLE, payload: data });
     } catch (error) {
@@ -280,4 +324,5 @@ export {
   follow,
   unfollow,
   findPeople,
+  getCurrentUserDetails,
 };

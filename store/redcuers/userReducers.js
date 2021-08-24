@@ -7,6 +7,7 @@ import {
   USER_UNFOLLOW,
   USER_LOADING,
   USER_DETAILS,
+  CURRENT_USER_PROFILE_DETAILS,
 } from "../constants/userConstants";
 
 const initialState = {
@@ -16,7 +17,7 @@ const initialState = {
   user: {},
   follow: {},
   unfollow: {},
-  userInfo: {},
+  currentUserDetails: {},
 };
 
 const userReducer = (state = initialState, action) => {
@@ -25,6 +26,11 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: action.payload,
+      };
+    case CURRENT_USER_PROFILE_DETAILS:
+      return {
+        ...state,
+        currentUserDetails: action.payload,
       };
     case USER_LIST:
       return {
@@ -44,7 +50,7 @@ const userReducer = (state = initialState, action) => {
     case USER_EDIT_PROFILE:
       return {
         ...state,
-        userInfo: action.payload,
+        currentUserDetails: action.payload,
       };
     case USER_DELETE:
       return {

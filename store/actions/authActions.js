@@ -134,45 +134,4 @@ const removeCookie = (key) => {
   }
 };
 
-const getCurrentUserDetails =
-  (authCookie, req) => async (dispatch) => {
-    try {
-      const { origin } = absoluteUrl(req);
-
-      dispatch({
-        type: USER_LOADING_ACTION,
-        payload: true,
-      });
-
-      const config = {
-        headers: {
-          Cookie: authCookie,
-        },
-      };
-
-      const { data } = await axios.get(
-        `${origin}/api/auth/me`,
-        config,
-      );
-
-      dispatch({
-        type: USER_LOADING_ACTION,
-        payload: false,
-      });
-
-      dispatch({
-        type: CURRENT_USER_PROFILE_DETAILS,
-        payload: data,
-      });
-    } catch (error) {
-      dispatch({
-        type: GLOBAL_ALERT,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
-      });
-    }
-  };
-
-export { register, login, logout, getCurrentUserDetails, authCookie };
+export { register, login, logout, authCookie };
