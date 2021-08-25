@@ -10,6 +10,8 @@ const globalErrorHandler = require("./helpers/dbErrorHandler");
 const authRoutes = require("./routes/authRoutes");
 const postRoutes = require("./routes/postRoutes");
 const userRoutes = require("./routes/userRoutes");
+const chatRoutes = require("./routes/chatRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== "production";
@@ -30,6 +32,8 @@ app.prepare().then(() => {
   server.use("/", authRoutes);
   server.use("/", postRoutes);
   server.use("/", userRoutes);
+  server.use("/", chatRoutes);
+  server.use("/", messageRoutes);
   server.all("*", (req, res) => handle(req, res));
   server.use(globalErrorHandler);
 
