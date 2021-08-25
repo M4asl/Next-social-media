@@ -8,6 +8,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Typography,
 } from "@material-ui/core";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import { useDispatch } from "react-redux";
@@ -16,10 +17,10 @@ import { USER_FIND_PEOPLE } from "../../store/constants/userConstants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxHeight: "48vh",
+    maxHeight: "43vh",
     zIndex: 100,
     position: "sticky",
-    top: "50%",
+    top: "55%",
     left: "6%",
     color: "#141414",
     borderRadius: "15px",
@@ -54,36 +55,44 @@ export default function Suggestion({ userReducer }) {
 
   return (
     <Card className={classes.root}>
-      {usersToFollow.length > 0
-        ? usersToFollow.map((user) => (
-            <List key={user._id}>
-              <ListItem className={classes.backgroundChat}>
-                <ListItemAvatar>
-                  <Avatar
-                    alt="Avatar Picture"
-                    src={`../../dist/img/users/${user.photo}`}
-                  />
-                </ListItemAvatar>
-                <ListItemText primary={user.name} />
-                <Button
-                  style={{
-                    padding: "6px 0px",
-                    minWidth: "40px",
-                    borderRadius: "12px",
-                  }}
-                  aria-label="Follow"
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => {
-                    clickFollow(user, user._id);
-                  }}
-                >
-                  <PersonAddIcon />
-                </Button>
-              </ListItem>
-            </List>
-          ))
-        : "No users"}
+      {usersToFollow.length > 0 ? (
+        usersToFollow.map((user) => (
+          <List key={user._id}>
+            <ListItem className={classes.backgroundChat}>
+              <ListItemAvatar>
+                <Avatar
+                  alt="Avatar Picture"
+                  src={`../../dist/img/users/${user.photo}`}
+                />
+              </ListItemAvatar>
+              <ListItemText primary={user.name} />
+              <Button
+                style={{
+                  padding: "6px 0px",
+                  minWidth: "40px",
+                  borderRadius: "12px",
+                }}
+                aria-label="Follow"
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  clickFollow(user, user._id);
+                }}
+              >
+                <PersonAddIcon />
+              </Button>
+            </ListItem>
+          </List>
+        ))
+      ) : (
+        <Typography
+          color="textPrimary"
+          variant="h5"
+          style={{ padding: "8px" }}
+        >
+          No users to suggestion.
+        </Typography>
+      )}
     </Card>
   );
 }

@@ -28,9 +28,9 @@ import { editUserProfile } from "../../store/actions/userActions";
 const useStyles = makeStyles((theme) => ({
   root: {
     zIndex: 100,
-    minHeight: "40vh",
+    minHeight: "43vh",
     position: "sticky",
-    top: "8%",
+    top: "10%",
     left: "6%",
     borderRadius: "15px",
     background: "rgba( 255, 255, 255, 0.25 )",
@@ -43,7 +43,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    height: "30vh",
+    height: "34vh",
+    padding: "0px",
   },
   modal: {
     display: "flex",
