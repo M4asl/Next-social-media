@@ -219,7 +219,7 @@ const follow = (userId, followId) => async (dispatch, getState) => {
     );
     dispatch({ type: USER_LOADING, payload: false });
 
-    dispatch({ type: USER_FOLLOW, payload: data });
+    dispatch({ type: USER_FOLLOW, payload: data.followers });
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -258,7 +258,7 @@ const unfollow =
 
       dispatch({ type: USER_LOADING, payload: false });
 
-      dispatch({ type: USER_UNFOLLOW, payload: data });
+      dispatch({ type: USER_UNFOLLOW, payload: data.followers });
     } catch (error) {
       const message =
         error.response && error.response.data.message

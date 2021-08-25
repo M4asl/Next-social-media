@@ -14,9 +14,7 @@ const initialState = {
   loading: false,
   users: [],
   usersToFollow: [],
-  user: {},
-  follow: {},
-  unfollow: {},
+  user: { followers: [] },
   currentUserDetails: {},
 };
 
@@ -60,12 +58,12 @@ const userReducer = (state = initialState, action) => {
     case USER_FOLLOW:
       return {
         ...state,
-        follow: action.payload,
+        user: { ...state.user, followers: action.payload },
       };
     case USER_UNFOLLOW:
       return {
         ...state,
-        unfollow: action.payload,
+        user: { ...state.user, followers: action.payload },
       };
     default:
       return state;
