@@ -229,9 +229,11 @@ export default function PrimarySearchAppBar() {
     <div className={classes.flex}>
       <AppBar position="fixed" className={classes.menuClass}>
         <Toolbar className={classes.toolBar}>
-          <Typography className={classes.title} variant="h6" noWrap>
-            MERNN App
-          </Typography>
+          <Link href="/">
+            <Typography className={classes.title} variant="h6" noWrap>
+              MERNN App
+            </Typography>
+          </Link>
           <div className={classes.search}>
             <InputBase
               id="search"
@@ -264,6 +266,11 @@ export default function PrimarySearchAppBar() {
               <div className={classes.usersContainer}>
                 {loading && <Loader />}
                 {errorMess ? <Error errorMessage={alert.err} /> : ""}
+                {users.length == 0 && (
+                  <h3 style={{ textAlign: "center" }}>
+                    Press enter to find users.
+                  </h3>
+                )}
                 <>
                   {users.map((user) => (
                     <Link href={`/users/${user._id}`} key={user._id}>

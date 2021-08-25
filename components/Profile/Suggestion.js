@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import {
   Avatar,
+  Button,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
 } from "@material-ui/core";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import { useDispatch } from "react-redux";
+import { follow } from "../../store/actions/userActions";
+import { USER_FIND_PEOPLE } from "../../store/constants/userConstants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,11 +38,24 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Suggestion({ userReducer }) {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const [usersToFollow, setUsersToFollow] = useState([]);
+  useEffect(() => {
+    if (userReducer.usersToFollow) {
+      setUsersToFollow(userReducer.usersToFollow);
+    }
+  }, [dispatch, userReducer.usersToFollow]);
+  const clickFollow = (user, id) => {
+    dispatch(follow(userReducer.currentUserDetails._id, user._id));
+    const toFollow = usersToFollow.filter((user) => user._id !== id);
+
+    dispatch({ type: USER_FIND_PEOPLE, payload: toFollow });
+  };
 
   return (
     <Card className={classes.root}>
-      {userReducer.usersToFollow.length > 0
-        ? userReducer.usersToFollow.map((user) => (
+      {usersToFollow.length > 0
+        ? usersToFollow.map((user) => (
             <List key={user._id}>
               <ListItem className={classes.backgroundChat}>
                 <ListItemAvatar>
@@ -47,6 +65,21 @@ export default function Suggestion({ userReducer }) {
                   />
                 </ListItemAvatar>
                 <ListItemText primary={user.name} />
+                <Button
+                  style={{
+                    padding: "6px 0px",
+                    minWidth: "40px",
+                    borderRadius: "12px",
+                  }}
+                  aria-label="Follow"
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => {
+                    clickFollow(user, user._id);
+                  }}
+                >
+                  <PersonAddIcon />
+                </Button>
               </ListItem>
             </List>
           ))

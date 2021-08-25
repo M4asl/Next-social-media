@@ -2,12 +2,12 @@ import React from "react";
 import { parseCookies } from "nookies";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core";
-import { getUserDetails } from "../../store/actions/userActions";
-import { wrapper } from "../../store/store";
 import {
-  authCookie,
+  getUserDetails,
   getCurrentUserDetails,
-} from "../../store/actions/authActions";
+} from "../../store/actions/userActions";
+import { wrapper } from "../../store/store";
+import { authCookie } from "../../store/actions/authActions";
 import UserProfileDetails from "../../components/User/UserProfileDetails";
 import { listByUser } from "../../store/actions/postActions";
 import PostList from "../../components/Post/PostList";

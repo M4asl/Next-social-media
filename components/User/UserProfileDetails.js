@@ -1,13 +1,17 @@
 import {
   Avatar,
+  Button,
   Card,
+  CardActions,
   CardContent,
   CardHeader,
   Divider,
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import FollowProfileButton from "../Layout/FollowProfileButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,6 +35,40 @@ const useStyles = makeStyles((theme) => ({
 
 const UserProfileDetails = ({ userReducer, postReducer }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const [following, setFollowing] = useState(false);
+
+  const clickFollowButton = (callApi) => {
+    dispatch(
+      callApi(
+        userReducer.currentUserDetails._id,
+        userReducer.user._id,
+      ),
+    );
+    setFollowing(!following);
+  };
+
+  const checkFollow = (user) => {
+    // console.log(user.followers);
+    const matchFollowers = user?.followers.some(
+      (follower) =>
+        follower._id == userReducer.currentUserDetails._id,
+    );
+    return matchFollowers;
+  };
+
+  useEffect(() => {
+    if (
+      userReducer &&
+      Object.keys(userReducer).length === 0 &&
+      userReducer.constructor === Object
+    ) {
+      return true;
+    }
+    const following = checkFollow(userReducer.user);
+    // console.log(following);
+    setFollowing(following);
+  }, [userReducer]);
 
   return (
     <Card className={classes.root}>
@@ -81,6 +119,19 @@ const UserProfileDetails = ({ userReducer, postReducer }) => {
         </Typography>
       </CardContent>
       <Divider className={classes.divider} />
+      <CardActions>
+        <FollowProfileButton
+          following={following}
+          onButtonClick={clickFollowButton}
+        />
+        <Button
+          variant="outlined"
+          color="primary"
+          style={{ width: "50%" }}
+        >
+          Message
+        </Button>
+      </CardActions>
     </Card>
   );
 };
