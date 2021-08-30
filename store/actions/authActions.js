@@ -1,10 +1,8 @@
 import axios from "axios";
 import cookie from "js-cookie";
-import absoluteUrl from "next-absolute-url";
 import Router from "next/router";
 
 import {
-  CURRENT_USER_PROFILE_DETAILS,
   USER_LOGIN_DETAILS,
   USER_LOGOUT,
   USER_REGISTER_DETAILS,
