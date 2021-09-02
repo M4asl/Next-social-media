@@ -16,6 +16,7 @@ import {
   findPeople,
   getCurrentUserDetails,
 } from "../store/actions/userActions";
+import { getChatsByUser } from "../store/actions/chatActions";
 
 const useStyles = makeStyles((theme) => ({
   "@global": {
@@ -55,7 +56,9 @@ const useStyles = makeStyles((theme) => ({
 
 function Home() {
   const classes = useStyles();
-  const { postReducer, userReducer } = useSelector((state) => state);
+  const { postReducer, userReducer, chatReducer } = useSelector(
+    (state) => state,
+  );
 
   return (
     <div className={classes.root}>
@@ -72,7 +75,7 @@ function Home() {
         </Grid>
         <Hidden smDown>
           <Grid item xs={3}>
-            <ChatColumn />
+            <ChatColumn chatReducer={chatReducer} widthProps="100%" />
           </Grid>
         </Hidden>
       </Grid>
@@ -98,6 +101,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       );
       await store.dispatch(listNewsFeed(req.headers.cookie, req));
       await store.dispatch(findPeople(req.headers.cookie, req));
+      await store.dispatch(getChatsByUser(req.headers.cookie, req));
       return {
         props: {},
       };
