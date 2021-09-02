@@ -31,7 +31,7 @@ const chatReducer = (state = initialState, action) => {
     case CREATE_CHAT:
       return {
         ...state,
-        chats: [action.payload, ...state.posts],
+        chats: [action.payload, ...state.chats],
       };
     default:
       return state;
