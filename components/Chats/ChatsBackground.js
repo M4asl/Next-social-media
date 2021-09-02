@@ -1,8 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Chats from "./Chats";
+import ChatList from "./ChatList";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     height: "85%",
@@ -20,7 +20,7 @@ const ChatsBackground = () => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Chats />
+      <ChatList />
     </div>
   );
 };
