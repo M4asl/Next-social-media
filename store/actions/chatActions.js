@@ -1,4 +1,5 @@
 import axios from "axios";
+import absoluteUrl from "next-absolute-url";
 import {
   CHAT_LOADING,
   CHAT_LIST_BY_USER,
@@ -7,23 +8,20 @@ import {
 } from "../constants/chatConstants";
 import { GLOBAL_ALERT } from "../constants/globalConstants";
 
-const getChatsByUser = () => async (dispatch, getState) => {
+const getChatsByUser = (authCookie, req) => async (dispatch) => {
   try {
+    const { origin } = absoluteUrl(req);
     dispatch({ type: CHAT_LOADING, payload: true });
-
-    const {
-      userLogin: { userInfo },
-    } = getState();
 
     const config = {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
+        Cookie: authCookie,
       },
     };
 
-    const { data } = await axios.get("/api/chats", config);
+    const { data } = await axios.get(`${origin}/api/chats`, config);
 
     dispatch({ type: CHAT_LOADING, payload: false });
 
@@ -40,22 +38,24 @@ const getChatsByUser = () => async (dispatch, getState) => {
   }
 };
 
-const getChatById = (id) => async (dispatch, getState) => {
+const getChatById = (authCookie, req, id) => async (dispatch) => {
   try {
-    dispatch({ type: CHAT_LOADING, payload: true });
+    const { origin } = absoluteUrl(req);
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+    dispatch({ type: CHAT_LOADING, payload: true });
 
     const config = {
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
+        Cookie: authCookie,
       },
     };
 
-    const { data } = await axios.get(`/api/chats/${id}`, config);
+    const { data } = await axios.get(
+      `${origin}/api/chats/${id}`,
+      config,
+    );
 
     dispatch({ type: CHAT_LOADING, payload: false });
 
