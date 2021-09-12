@@ -1,5 +1,7 @@
 import { makeStyles } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import Message from "../Messages/Message";
 
 const useStyles = makeStyles((theme) => ({
   chatMessagesContainer: {
@@ -11,9 +13,23 @@ const useStyles = makeStyles((theme) => ({
 
 const ChatMessages = () => {
   const classes = useStyles();
+
+  const { messageReducer, userReducer } = useSelector(
+    (state) => state,
+  );
+  const [messages, setMessages] = useState(messageReducer.messages);
+  const { currentUserDetails } = userReducer;
   return (
     <div className={classes.chatMessagesContainer}>
-      <h1>Chat messages</h1>
+      {messages.map((message, index) => (
+        <Message
+          key={message._id}
+          message={message}
+          index={index}
+          messages={messages}
+          currentUserDetails={currentUserDetails}
+        />
+      ))}
     </div>
   );
 };
