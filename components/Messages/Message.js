@@ -43,7 +43,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 let lastSenderId = "";
 
-const Message = ({ message, index, messages, currentUserDetails }) => {
+const Message = ({
+  message,
+  index,
+  messages,
+  currentUserDetails,
+}) => {
   const classes = useStyles();
 
   function createMessageView(message, nextMessage, lastSenderId) {
@@ -100,6 +105,6 @@ const Message = ({ message, index, messages, currentUserDetails }) => {
 
   lastSenderId = message.sender._id;
 
-  return <div>{messageView}</div>;
+  return messageView;
 };
 export default Message;
