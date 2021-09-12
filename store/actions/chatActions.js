@@ -71,18 +71,17 @@ const getChatById = (authCookie, req, id) => async (dispatch) => {
   }
 };
 
-const createChatAction = (users) => async (dispatch, getState) => {
+const createChat = (users) => async (dispatch, getState) => {
   try {
     dispatch({ type: CHAT_LOADING, payload: true });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+    const { authCookie } = getState();
 
     const config = {
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
+        Cookie: authCookie,
       },
     };
 
@@ -95,7 +94,7 @@ const createChatAction = (users) => async (dispatch, getState) => {
     dispatch({ type: CHAT_LOADING, payload: false });
 
     dispatch({ type: CREATE_CHAT, payload: data });
-    window.location.href = `/chats`;
+    window.location.href = `/chats/${data._id}`;
   } catch (error) {
     dispatch({
       type: GLOBAL_ALERT,
@@ -107,4 +106,4 @@ const createChatAction = (users) => async (dispatch, getState) => {
   }
 };
 
-export { getChatsByUser, getChatById, createChatAction };
+export { getChatsByUser, getChatById, createChat };

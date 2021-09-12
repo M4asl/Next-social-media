@@ -5,23 +5,26 @@ import {
   MESSAGE_CREATE,
 } from "../constants/messageConstants";
 import { GLOBAL_ALERT } from "../constants/globalConstants";
+import absoluteUrl from "next-absolute-url";
 
-const getMessageByChatId = (id) => async (dispatch, getState) => {
+const getMessageByChatId = (authCookie, req, id) => async (dispatch) => {
   try {
+    const { origin } = absoluteUrl(req);
+
     dispatch({ type: MESSAGE_LOADING, payload: true });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+   
 
     const config = {
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
+        Cookie: authCookie,
       },
     };
 
-    const { data } = await axios.get(`/api/messages/${id}`, config);
+
+    const { data } = await axios.get(`${origin}/api/messages/${id}`, config);
 
     dispatch({ type: MESSAGE_LOADING, payload: false });
 
