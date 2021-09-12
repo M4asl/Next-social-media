@@ -1,22 +1,24 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useState } from "react";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import GroupIcon from "@material-ui/icons/Group";
 import SearchIcon from "@material-ui/icons/Search";
 import Grid from "@material-ui/core/Grid";
-import InputBase from "@material-ui/core/InputBase";
+import { Autocomplete } from "@material-ui/lab";
+import { Popper, TextField } from "@material-ui/core";
+import { useSelector } from "react-redux";
+import ChatSearch from "./ChatSearch";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     color: theme.palette.text.primary,
     backgroundColor: theme.palette.background.secondary,
-    height: "15%",
+    // height: "15%",
   },
   search: {
     display: "flex",
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.background.default,
     margin: "8px",
     width: "100%",
     borderRadius: "15px",
@@ -42,10 +44,27 @@ const useStyles = makeStyles((theme) => ({
       width: "20ch",
     },
   },
+  field: {
+    background: "#141414",
+    width: "100%",
+  },
+  userItem: {
+    background: "#000",
+    color: "white",
+  },
+  listbox: {
+    boxSizing: "border-box",
+    "& ul": {
+      padding: 0,
+      margin: 0,
+    },
+  },
 }));
 
 const ChatMenu = () => {
   const classes = useStyles();
+  const { userReducer } = useSelector((state) => state);
+  const [users, setUsers] = useState(userReducer.users);
   return (
     <Grid
       container
@@ -54,7 +73,11 @@ const ChatMenu = () => {
       alignItems="center"
     >
       <Grid item>
-        <Typography color="textPrimary" variant="h4" style={{ padding: "8px" }}>
+        <Typography
+          color="textPrimary"
+          variant="h4"
+          style={{ padding: "8px" }}
+        >
           Chats
         </Typography>
       </Grid>
@@ -73,17 +96,7 @@ const ChatMenu = () => {
           className={classes.search}
           style={{ justifyContent: "space-between" }}
         >
-          <InputBase
-            placeholder="Search…"
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput,
-            }}
-            inputProps={{ "aria-label": "search" }}
-          />
-          <div className={classes.searchIcon}>
-            <SearchIcon />
-          </div>
+          <ChatSearch users={users} />
         </div>
       </Grid>
     </Grid>
