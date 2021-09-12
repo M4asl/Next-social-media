@@ -4,10 +4,13 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import ChatColumn from "../../components/Chats/ChatColumn";
-import Chat from "../../components/Chats/Chat";
+import Chat from "../../components/Chats/ChatContainer";
 import { authCookie } from "../../store/actions/authActions";
 import { getChatsByUser } from "../../store/actions/chatActions";
-import { getCurrentUserDetails } from "../../store/actions/userActions";
+import {
+  getCurrentUserDetails,
+  getUsersList,
+} from "../../store/actions/userActions";
 import { wrapper } from "../../store/store";
 
 const useStyles = makeStyles((theme) => ({
@@ -69,11 +72,15 @@ export const getServerSideProps = wrapper.getServerSideProps(
           },
         };
       }
+      const userData = "";
       await store.dispatch(authCookie(req.headers.cookie));
       await store.dispatch(
         getCurrentUserDetails(req.headers.cookie, req),
       );
       await store.dispatch(getChatsByUser(req.headers.cookie, req));
+      await store.dispatch(
+        getUsersList(userData, req.headers.cookie, req),
+      );
       return {
         props: {},
       };

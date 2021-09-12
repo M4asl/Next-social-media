@@ -15,6 +15,7 @@ import { authCookie } from "../store/actions/authActions";
 import {
   findPeople,
   getCurrentUserDetails,
+  getUsersList,
 } from "../store/actions/userActions";
 import { getChatsByUser } from "../store/actions/chatActions";
 
@@ -95,6 +96,8 @@ export const getServerSideProps = wrapper.getServerSideProps(
           },
         };
       }
+
+      const userData = "";
       await store.dispatch(authCookie(req.headers.cookie));
       await store.dispatch(
         getCurrentUserDetails(req.headers.cookie, req),
@@ -102,6 +105,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
       await store.dispatch(listNewsFeed(req.headers.cookie, req));
       await store.dispatch(findPeople(req.headers.cookie, req));
       await store.dispatch(getChatsByUser(req.headers.cookie, req));
+      await store.dispatch(
+        getUsersList(userData, req.headers.cookie, req),
+      );
       return {
         props: {},
       };

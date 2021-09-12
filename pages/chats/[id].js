@@ -1,7 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 import { parseCookies } from "nookies";
 import React from "react";
-import { useSelector } from "react-redux";
 import ChatColumn from "../../components/Chats/ChatColumn";
 import Chat from "../../components/Chats/ChatContainer";
 import { authCookie } from "../../store/actions/authActions";
@@ -9,7 +8,11 @@ import {
   getChatsByUser,
   getChatById,
 } from "../../store/actions/chatActions";
-import { getCurrentUserDetails } from "../../store/actions/userActions";
+import { getMessageByChatId } from "../../store/actions/messageActions";
+import {
+  getCurrentUserDetails,
+  getUsersList,
+} from "../../store/actions/userActions";
 import { wrapper } from "../../store/store";
 
 const useStyles = makeStyles((theme) => ({
@@ -62,6 +65,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
           },
         };
       }
+      const userData = "";
       await store.dispatch(authCookie(req.headers.cookie));
       await store.dispatch(
         getCurrentUserDetails(req.headers.cookie, req),
@@ -69,6 +73,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
       await store.dispatch(getChatsByUser(req.headers.cookie, req));
       await store.dispatch(
         getChatById(req.headers.cookie, req, params.id),
+      );
+      await store.dispatch(
+        getMessageByChatId(req.headers.cookie, req, params.id),
+      );
+      await store.dispatch(
+        getUsersList(userData, req.headers.cookie, req),
       );
       return {
         props: {},
