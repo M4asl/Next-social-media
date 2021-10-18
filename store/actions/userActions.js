@@ -10,6 +10,8 @@ import {
   USER_UNFOLLOW,
   USER_DETAILS,
   CURRENT_USER_PROFILE_DETAILS,
+  UPDATE_CURRENT_USER_FOLLOWING_FOLLOW,
+  UPDATE_CURRENT_USER_FOLLOWING_UNFOLLOW,
 } from "../constants/userConstants";
 
 import { GLOBAL_ALERT } from "../constants/globalConstants";
@@ -219,7 +221,11 @@ const follow = (userId, followId) => async (dispatch, getState) => {
     );
     dispatch({ type: USER_LOADING, payload: false });
 
-    dispatch({ type: USER_FOLLOW, payload: data.followers });
+    dispatch({ type: USER_FOLLOW, payload: data });
+    dispatch({
+      type: UPDATE_CURRENT_USER_FOLLOWING_FOLLOW,
+      payload: followId,
+    });
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -258,7 +264,11 @@ const unfollow =
 
       dispatch({ type: USER_LOADING, payload: false });
 
-      dispatch({ type: USER_UNFOLLOW, payload: data.followers });
+      dispatch({ type: USER_UNFOLLOW, payload: data });
+      dispatch({
+        type: UPDATE_CURRENT_USER_FOLLOWING_UNFOLLOW,
+        payload: unfollowId,
+      });
     } catch (error) {
       const message =
         error.response && error.response.data.message

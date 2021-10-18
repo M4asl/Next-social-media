@@ -8,14 +8,17 @@ import {
   USER_LOADING,
   USER_DETAILS,
   CURRENT_USER_PROFILE_DETAILS,
+  UPDATE_CURRENT_USER_FOLLOWING_FOLLOW,
+  UPDATE_CURRENT_USER_FOLLOWING_UNFOLLOW,
 } from "../constants/userConstants";
+import { DeleteData } from "../actions/globalActions";
 
 const initialState = {
   loading: false,
   users: [],
   usersToFollow: [],
-  user: { followers: [] },
-  currentUserDetails: {},
+  user: {},
+  currentUserDetails: { following: [] },
 };
 
 const userReducer = (state = initialState, action) => {
@@ -58,12 +61,37 @@ const userReducer = (state = initialState, action) => {
     case USER_FOLLOW:
       return {
         ...state,
-        user: { ...state.user, followers: action.payload },
+        user: action.payload,
       };
     case USER_UNFOLLOW:
       return {
         ...state,
-        user: { ...state.user, followers: action.payload },
+        user: action.payload,
+      };
+    case UPDATE_CURRENT_USER_FOLLOWING_FOLLOW:
+      return {
+        ...state,
+        currentUserDetails: {
+          ...state.currentUserDetails,
+          following: [
+            action.payload,
+            ...state.currentUserDetails.following,
+          ],
+        },
+        usersToFollow: DeleteData(
+          state.usersToFollow,
+          action.payload,
+        ),
+      };
+    case UPDATE_CURRENT_USER_FOLLOWING_UNFOLLOW:
+      return {
+        ...state,
+        currentUserDetails: {
+          ...state.currentUserDetails,
+          following: state.currentUserDetails.following.filter(
+            (follow) => follow !== action.payload,
+          ),
+        },
       };
     default:
       return state;
