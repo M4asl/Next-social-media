@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
-import { parseCookies } from "nookies";
-import { useSelector } from "react-redux";
+import { parseCookies, destroyCookie } from "nookies";
+import { useSelector, useDispatch } from "react-redux";
+import { socket } from "../service/socket";
 import Profile from "../components/Profile/Profile";
 import Suggestion from "../components/Profile/Suggestion";
 import NewPost from "../components/Post/NewPost";
@@ -18,6 +19,8 @@ import {
   getUsersList,
 } from "../store/actions/userActions";
 import { getChatsByUser } from "../store/actions/chatActions";
+import getNotificationByUser from "../store/actions/notificationActions";
+import { UPDATE_CHAT } from "../store/constants/chatConstants";
 
 const useStyles = makeStyles((theme) => ({
   "@global": {
@@ -57,20 +60,37 @@ const useStyles = makeStyles((theme) => ({
 
 function Home() {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const { postReducer, userReducer, chatReducer } = useSelector(
     (state) => state,
   );
+  const currentUser = userReducer.currentUserDetails;
+
+  useEffect(() => {
+    socket.emit("setup", currentUser);
+    socket.emit(
+      "join",
+      `${userReducer.currentUserDetails.name} is active`,
+    );
+
+    socket.on("latest message", (data) => {
+      dispatch({
+        type: UPDATE_CHAT,
+        payload: data,
+      });
+    });
+  }, []);
 
   return (
     <div className={classes.root}>
-      <Grid container direction="row" justify="space-between">
+      <Grid container direction="row" justifyContent="space-between">
         <Hidden mdDown>
           <Grid item xs={3} style={{ padding: "0px 20px" }}>
             <Profile />
             <Suggestion userReducer={userReducer} />
           </Grid>
         </Hidden>
-        <Grid item xs={10} md={8} lg={5} className={classes.center}>
+        <Grid item xs={11} md={8} lg={5} className={classes.center}>
           <NewPost />
           <PostList postReducer={postReducer} />
         </Grid>
@@ -89,6 +109,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     async ({ req }) => {
       const { token } = await parseCookies({ req });
       if (!token) {
+        destroyCookie({ req }, "token");
         return {
           redirect: {
             destination: "/login",
@@ -107,6 +128,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
       await store.dispatch(getChatsByUser(req.headers.cookie, req));
       await store.dispatch(
         getUsersList(userData, req.headers.cookie, req),
+      );
+      await store.dispatch(
+        getNotificationByUser(req.headers.cookie, req),
       );
       return {
         props: {},
