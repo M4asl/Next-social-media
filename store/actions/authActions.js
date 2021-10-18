@@ -1,14 +1,10 @@
 import axios from "axios";
-import cookie from "js-cookie";
+import Cookies from "js-cookie";
 import Router from "next/router";
-
 import {
-  USER_LOGIN_DETAILS,
   USER_LOGOUT,
-  USER_REGISTER_DETAILS,
   USER_LOADING_ACTION,
   AUTHENTICATE,
-  DEAUTHENTICATE,
 } from "../constants/authConstants";
 import { GLOBAL_ALERT } from "../constants/globalConstants";
 
@@ -37,26 +33,16 @@ const register =
         payload: false,
       });
 
-      dispatch({
-        type: USER_REGISTER_DETAILS,
-        payload: data,
+      Cookies.set("token", data.token, {
+        expires: 1,
+        path: "/",
       });
-
-      dispatch({
-        type: USER_LOGIN_DETAILS,
-        payload: data,
-      });
-
-      setCookie("token", data.token);
-      Router.push("/");
       dispatch({ type: AUTHENTICATE, payload: data.token });
+      window.location.href = "/";
     } catch (error) {
       dispatch({
         type: GLOBAL_ALERT,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
+        payload: error.response.data.error.errors,
       });
     }
   };
@@ -85,51 +71,34 @@ const login = (email, password) => async (dispatch) => {
       payload: false,
     });
 
-    dispatch({
-      type: USER_LOGIN_DETAILS,
-      payload: data,
+    Cookies.set("token", data.token, {
+      expires: 1,
+      path: "/",
     });
-
-    setCookie("token", data.token);
-    Router.push("/");
     dispatch({ type: AUTHENTICATE, payload: data.token });
+    window.location.href = "/";
   } catch (error) {
     dispatch({
       type: GLOBAL_ALERT,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: error.response.data.message,
     });
   }
 };
 
-const logout = () => (dispatch) => {
-  removeCookie("token");
-  dispatch({ type: USER_LOGOUT });
-  Router.push("/login");
-  dispatch({ type: DEAUTHENTICATE });
+const logout = () => async (dispatch) => {
+  try {
+    Cookies.remove("token");
+    await axios.get("/api/auth/logout");
+    dispatch({ type: USER_LOGOUT });
+    Router.push("/login");
+    Router.reload();
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const authCookie = (authCookie) => (dispatch) => {
   dispatch({ type: AUTHENTICATE, payload: authCookie });
-};
-
-const setCookie = (key, value) => {
-  if (process.browser) {
-    cookie.set(key, value, {
-      expires: 1,
-      path: "/",
-    });
-  }
-};
-
-const removeCookie = (key) => {
-  if (process.browser) {
-    cookie.remove(key, {
-      expires: 1,
-    });
-  }
 };
 
 export { register, login, logout, authCookie };

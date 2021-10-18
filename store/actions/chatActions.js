@@ -42,8 +42,6 @@ const getChatById = (authCookie, req, id) => async (dispatch) => {
   try {
     const { origin } = absoluteUrl(req);
 
-    dispatch({ type: CHAT_LOADING, payload: true });
-
     const config = {
       headers: {
         Accept: "application/json",
@@ -56,8 +54,6 @@ const getChatById = (authCookie, req, id) => async (dispatch) => {
       `${origin}/api/chats/${id}`,
       config,
     );
-
-    dispatch({ type: CHAT_LOADING, payload: false });
 
     dispatch({ type: GET_CHAT_BY_ID, payload: data });
   } catch (error) {
