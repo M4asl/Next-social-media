@@ -10,10 +10,14 @@ import TextField from "@material-ui/core/TextField";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import { Button } from "@material-ui/core";
+import PropTypes from "prop-types";
 import theme from "../theme";
-import { comment, uncomment } from "../../store/actions/postActions";
+import {
+  createComment,
+  uncomment,
+} from "../../store/actions/postActions";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     maxWidth: "100%",
   },
@@ -25,9 +29,15 @@ const useStyles = makeStyles((theme) => ({
     background: "rgba( 255, 255, 255, 0.25 )",
     backdropFilter: "blur( 10.0px )",
     border: "1px solid rgba( 255, 255, 255, 0.18 )",
+    [theme.breakpoints.down("sm")]: {
+      padding: "0px 5px",
+    },
   },
   text: {
     color: theme.palette.text.secondary,
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "0.7rem",
+    },
   },
   addCommentBox: {
     display: "flex",
@@ -36,6 +46,17 @@ const useStyles = makeStyles((theme) => ({
   primaryText: {
     display: "flex",
     alignItems: "center",
+  },
+  avatar: {
+    [theme.breakpoints.down("sm")]: {
+      width: "25px",
+      height: "25px",
+    },
+  },
+  body2: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "0.8rem",
+    },
   },
 }));
 
@@ -70,7 +91,7 @@ const Comments = ({ comments, post }) => {
   const [text, setText] = useState("");
   const [commentsList, setCommentsList] = useState(comments);
   const dispatch = useDispatch();
-  const { authReducer } = useSelector((state) => state);
+  const { userReducer } = useSelector((state) => state);
 
   const handleChange = (event) => {
     setText(event.target.value);
@@ -79,12 +100,16 @@ const Comments = ({ comments, post }) => {
     if (event.keyCode === 13 && event.target.value) {
       const newComment = {
         text,
-        postedBy: authReducer.currentUserDetails,
+        postedBy: userReducer.currentUserDetails,
         created: new Date().toISOString,
       };
       event.preventDefault();
       dispatch(
-        comment(authReducer.currentUserDetails._id, newComment, post),
+        createComment(
+          userReducer.currentUserDetails._id,
+          newComment,
+          post,
+        ),
       );
       setText("");
     }
@@ -94,7 +119,7 @@ const Comments = ({ comments, post }) => {
     setCommentsList(post.comments);
   }, [post.comments]);
 
-  const deleteComment = (comment) => (event) => {
+  const deleteComment = (comment) => () => {
     dispatch(uncomment(post, comment._id));
   };
 
@@ -108,20 +133,27 @@ const Comments = ({ comments, post }) => {
               className={classes.listItem}
               key={comment._id}
             >
-              <ListItemAvatar>
+              <ListItemAvatar style={{ minWidth: "35px" }}>
                 <Avatar
                   alt="Avatar Picture"
                   src={`../../dist/img/users/${comment.postedBy.photo}`}
+                  className={classes.avatar}
                 />
               </ListItemAvatar>
               <ListItemText
                 primary={
                   <div className={classes.primaryText}>
-                    {comment.postedBy.name}
-                    {authReducer.currentUserDetails._id ===
+                    <Typography
+                      component="p"
+                      variant="body2"
+                      className={classes.body2}
+                    >
+                      {comment.postedBy.name}
+                    </Typography>
+                    {userReducer.currentUserDetails._id ===
                       comment.postedBy._id && (
                       <Button onClick={deleteComment(comment)}>
-                        <DeleteOutlineIcon />
+                        <DeleteOutlineIcon fontSize="small" />
                       </Button>
                     )}
                   </div>
@@ -145,7 +177,8 @@ const Comments = ({ comments, post }) => {
       <div className={classes.addCommentBox}>
         <Avatar
           alt="Avatar Picture"
-          src={`../../dist/img/users/${authReducer.currentUserDetails.photo}`}
+          src={`../../dist/img/users/${userReducer.currentUserDetails.photo}`}
+          className={classes.avatar}
         />
         <Input
           label="Text something..."
@@ -160,3 +193,8 @@ const Comments = ({ comments, post }) => {
 };
 
 export default Comments;
+
+Comments.propTypes = {
+  comments: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  post: PropTypes.oneOfType([PropTypes.object]).isRequired,
+};
