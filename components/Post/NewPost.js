@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import theme from "../theme";
 import { createPost } from "../../store/actions/postActions";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     width: "100%",
     zIndex: 100,
@@ -99,7 +99,7 @@ export default function NewPost() {
     const postData = new FormData();
     postData.append("text", values.text);
     postData.append("photo", values.photo);
-    dispatch(createPost(postData));
+    dispatch(createPost(postData, userReducer.currentUserDetails));
     setValues({ ...values });
     setValues({ text: "", photo: "" });
   };
@@ -134,14 +134,14 @@ export default function NewPost() {
         />
       </CardContent>
       <div className={classes.buttonContainer}>
-        <input
-          accept="image/*"
-          onChange={handleChange("photo")}
-          className={classes.input}
-          id="icon-button-file"
-          type="file"
-        />
         <label htmlFor="icon-button-file">
+          <input
+            accept="image/*"
+            onChange={handleChange("photo")}
+            className={classes.input}
+            id="icon-button-file"
+            type="file"
+          />
           <IconButton
             color="primary"
             aria-label="upload picture"
@@ -152,6 +152,7 @@ export default function NewPost() {
         </label>
         <Button
           variant="contained"
+          disabled={!values.text}
           className={classes.button}
           onClick={clickPost}
         >

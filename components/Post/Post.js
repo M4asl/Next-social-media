@@ -14,6 +14,7 @@ import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline";
 import Moment from "react-moment";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
+import PropTypes from "prop-types";
 import {
   likePost,
   unlikePost,
@@ -33,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "300px",
     margin: "22px 0px",
     padding: "20px",
+    [theme.breakpoints.down("sm")]: {
+      padding: "10px",
+    },
   },
   backgroundPost: {
     width: "100%",
@@ -40,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary,
     borderRadius: "15px",
     padding: "10px",
+    [theme.breakpoints.down("sm")]: {
+      padding: "0px 4px",
+    },
   },
   divider: {
     height: "3px",
@@ -54,6 +61,18 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     margin: "5px 0px",
+  },
+  avatar: {
+    [theme.breakpoints.down("sm")]: {
+      width: "25px",
+      height: "25px",
+      marginLeft: "8px",
+    },
+  },
+  body2: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "0.8rem",
+    },
   },
 }));
 
@@ -72,10 +91,9 @@ const Post = ({ post }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [like, setLike] = useState(false);
-  const { authReducer } = useSelector((state) => state);
-
+  const { userReducer } = useSelector((state) => state);
   const clickLikeButton = (callApi) => {
-    dispatch(callApi(post, authReducer.currentUserDetails));
+    dispatch(callApi(post, userReducer.currentUserDetails));
     setLike(!like);
   };
 
@@ -88,12 +106,12 @@ const Post = ({ post }) => {
 
   const checkLike = (post) => {
     const matchFollowers = post?.likes.some(
-      (like) => like._id == authReducer.currentUserDetails._id,
+      (like) => like._id === userReducer.currentUserDetails._id,
     );
     return matchFollowers;
   };
 
-  const deletePost = (postId) => (event) => {
+  const deletePost = (postId) => () => {
     dispatch(removePost(postId));
   };
 
@@ -117,18 +135,30 @@ const Post = ({ post }) => {
             <Avatar
               alt="Avatar Picture"
               src={`../../dist/img/users/${post.postedBy.photo}`}
+              className={classes.avatar}
             />
           }
-          title={post.postedBy.name}
+          title={
+            <Typography
+              component="p"
+              variant="body2"
+              className={classes.body2}
+            >
+              {post.postedBy.name}
+            </Typography>
+          }
           subheader={
             <>
-              <Moment fromNow style={{ color: "#BFBFBF" }}>
+              <Moment
+                fromNow
+                style={{ color: "#BFBFBF", fontSize: "0.8rem" }}
+              >
                 {post.created}
               </Moment>
-              {authReducer.currentUserDetails._id ===
+              {userReducer.currentUserDetails._id ===
                 post.postedBy._id && (
                 <Button onClick={deletePost(post._id)}>
-                  <DeleteOutlineIcon />
+                  <DeleteOutlineIcon fontSize="small" />
                 </Button>
               )}
             </>
@@ -143,6 +173,13 @@ const Post = ({ post }) => {
           >
             {post.text}
           </Typography>
+          {post?.photo && (
+            <img
+              alt="Post img"
+              src={`../../dist/img/posts/${post.photo}`}
+              style={{ marginTop: "10px", width: "100%" }}
+            />
+          )}
         </CardContent>
         <Divider className={classes.divider} />
         <div className={classes.statisticsBox}>
@@ -184,3 +221,7 @@ const Post = ({ post }) => {
 };
 
 export default Post;
+
+Post.propTypes = {
+  post: PropTypes.oneOfType([PropTypes.object]).isRequired,
+};
