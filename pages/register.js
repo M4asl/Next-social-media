@@ -14,6 +14,7 @@ import { parseCookies } from "nookies";
 import Loader from "../components/Layout/Loader";
 import { register } from "../store/actions/authActions";
 import Error from "../components/Layout/Error";
+import theme from "../components/theme";
 
 const useStyles = makeStyles(() => ({
   registerContainer: {
@@ -32,6 +33,14 @@ const useStyles = makeStyles(() => ({
     justifyContent: "center",
     flexDirection: "column",
     alignItems: "center",
+    [theme.breakpoints.down("md")]: {
+      width: "90%",
+    },
+  },
+  textField: {
+    [theme.breakpoints.down("md")]: {
+      margin: "0px 0px 5px 0px",
+    },
   },
 }));
 
@@ -62,7 +71,7 @@ const Register = () => {
   };
   return (
     <Card className={classes.registerContainer}>
-      <h1 style={{ marginLeft: "20px" }}>Register</h1>
+      <h1 style={{ margin: "0px" }}>Register</h1>
       <CardContent>
         <TextField
           id="name"

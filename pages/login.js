@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Link from "next/link";
 import {
@@ -14,6 +14,9 @@ import { parseCookies } from "nookies";
 import Error from "../components/Layout/Error";
 import { login } from "../store/actions/authActions";
 import Loader from "../components/Layout/Loader";
+import theme from "../components/theme";
+import { wrapper } from "../store/store";
+import { GLOBAL_ALERT } from "../store/constants/globalConstants";
 
 const useStyles = makeStyles(() => ({
   loginContainer: {
@@ -32,6 +35,14 @@ const useStyles = makeStyles(() => ({
     justifyContent: "center",
     flexDirection: "column",
     alignItems: "center",
+    [theme.breakpoints.down("md")]: {
+      width: "90%",
+    },
+  },
+  textField: {
+    [theme.breakpoints.down("md")]: {
+      margin: "0px 0px 5px 0px",
+    },
   },
 }));
 
@@ -52,9 +63,10 @@ const Login = () => {
     e.preventDefault();
     dispatch(login(values.email, values.password));
   };
+
   return (
     <Card className={classes.loginContainer}>
-      <h1 style={{ marginLeft: "20px" }}>Login</h1>
+      <h1 style={{ margin: "0px" }}>Login</h1>
       <CardContent>
         <TextField
           id="email"
@@ -105,20 +117,25 @@ const Login = () => {
   );
 };
 
-export async function getServerSideProps(ctx) {
-  const { token } = await parseCookies(ctx);
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req }) => {
+      const { token } = await parseCookies({ req });
+      if (token) {
+        return {
+          redirect: {
+            destination: "/",
+            permanent: false,
+          },
+        };
+      }
 
-  if (token) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {},
-  };
-}
+      await store.dispatch({ type: GLOBAL_ALERT, payload: [] });
+
+      return {
+        props: {},
+      };
+    },
+);
 
 export default Login;
