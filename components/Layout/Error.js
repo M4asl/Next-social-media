@@ -1,18 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import PropTypes from "prop-types";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   error: {
-    fontSize: "20px",
-    textAlign: "center",
-    color: "#fff",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "80%",
-    lineHeight: "1.4",
+    fontSize: "1rem",
+    color: "#ba000d",
+    maxWidth: "200px",
   },
 }));
 
@@ -21,7 +16,7 @@ const Error = ({ errorMessage }) => {
 
   return (
     <Typography
-      component="span"
+      component="div"
       variant="body2"
       className={classes.error}
     >
@@ -31,3 +26,7 @@ const Error = ({ errorMessage }) => {
 };
 
 export default Error;
+
+Error.propTypes = {
+  errorMessage: PropTypes.string.isRequired,
+};

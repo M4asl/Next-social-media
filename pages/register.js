@@ -1,21 +1,24 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import Link from "next/link";
 import {
   Button,
   Card,
   CardActions,
   CardContent,
   TextField,
+  Typography,
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { parseCookies } from "nookies";
 import Loader from "../components/Layout/Loader";
 import { register } from "../store/actions/authActions";
+import Error from "../components/Layout/Error";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   registerContainer: {
     width: "45%",
-    height: "60vh",
+    minHeight: "60vh",
     background: "rgba( 255, 255, 255, 0.25 )",
     boxShadow: "0 2px 12px 0 rgba( 255, 255, 255, 0.2 )",
     backdropFilter: "blur( 10.0px )",
@@ -60,7 +63,6 @@ const Register = () => {
   return (
     <Card className={classes.registerContainer}>
       <h1 style={{ marginLeft: "20px" }}>Register</h1>
-      {alert.error && "ERROR"}
       <CardContent>
         <TextField
           id="name"
@@ -71,6 +73,11 @@ const Register = () => {
           margin="normal"
           variant="outlined"
         />
+
+        {alert.error.name && (
+          <Error errorMessage={alert.error.name.message} />
+        )}
+
         <br />
         <TextField
           id="email"
@@ -82,6 +89,11 @@ const Register = () => {
           margin="normal"
           variant="outlined"
         />
+
+        {alert.error.email && (
+          <Error errorMessage={alert.error.email.message} />
+        )}
+
         <br />
         <TextField
           id="password"
@@ -93,6 +105,11 @@ const Register = () => {
           margin="normal"
           variant="outlined"
         />
+
+        {alert.error.password && (
+          <Error errorMessage={alert.error.password.message} />
+        )}
+
         <br />
         <TextField
           id="passwordConfirm"
@@ -104,6 +121,10 @@ const Register = () => {
           margin="normal"
           variant="outlined"
         />
+
+        {alert.error.passwordConfirm && (
+          <Error errorMessage={alert.error.passwordConfirm.message} />
+        )}
         <CardActions style={{ padding: "8px 0px" }}>
           <Button
             color="primary"
@@ -114,6 +135,18 @@ const Register = () => {
             {userReducer.loading ? <Loader /> : "Submit"}
           </Button>
         </CardActions>
+        <Link href="/login">
+          <Typography
+            style={{
+              fontSize: "1rem",
+              color: "#141414",
+              letterSpacing: "0.02rem",
+              cursor: "pointer",
+            }}
+          >
+            You have acount? Sign in.
+          </Typography>
+        </Link>
       </CardContent>
     </Card>
   );

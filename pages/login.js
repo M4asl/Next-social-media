@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import Link from "next/link";
 import {
   Button,
   Card,
   CardActions,
   CardContent,
   TextField,
+  Typography,
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { parseCookies } from "nookies";
@@ -13,7 +15,7 @@ import Error from "../components/Layout/Error";
 import { login } from "../store/actions/authActions";
 import Loader from "../components/Layout/Loader";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   loginContainer: {
     width: "45%",
     height: "60vh",
@@ -53,7 +55,6 @@ const Login = () => {
   return (
     <Card className={classes.loginContainer}>
       <h1 style={{ marginLeft: "20px" }}>Login</h1>
-      {alert.error && <Error errorMessage={error} />}
       <CardContent>
         <TextField
           id="email"
@@ -76,6 +77,7 @@ const Login = () => {
           margin="normal"
           variant="outlined"
         />
+        {alert.error && <Error errorMessage={alert.error} />}
         <CardActions style={{ padding: "8px 0px" }}>
           <Button
             color="primary"
@@ -86,6 +88,18 @@ const Login = () => {
             {userReducer.loading ? <Loader /> : "Submit"}
           </Button>
         </CardActions>
+        <Link href="/register">
+          <Typography
+            style={{
+              fontSize: "1rem",
+              color: "#141414",
+              letterSpacing: "0.02rem",
+              cursor: "pointer",
+            }}
+          >
+            Create acount
+          </Typography>
+        </Link>
       </CardContent>
     </Card>
   );
