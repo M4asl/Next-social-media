@@ -13,7 +13,7 @@ import {
 } from "../../store/actions/userActions";
 import { wrapper } from "../../store/store";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   "@global": {
     "*::-webkit-scrollbar": {
       width: "10px",
@@ -44,13 +44,14 @@ const chats = () => {
   const classes = useStyles();
   const router = useRouter();
   const { chatReducer } = useSelector((state) => state);
-  const [chats, setChats] = useState(chatReducer.chats);
+  const [chatsList, setChatsList] = useState([]);
 
   useEffect(() => {
-    if (chats && chats[0] && chats[0]._id) {
-      router.push(`/chats/${chats[0]._id}`);
+    setChatsList(chatReducer.chats);
+    if (chatsList && chatsList[0] && chatsList[0]._id) {
+      router.push(`/chats/${chatsList[0]._id}`);
     }
-  }, [chats]);
+  }, []);
 
   return (
     <div className={classes.chatContainer}>
