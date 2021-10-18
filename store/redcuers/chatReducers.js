@@ -3,7 +3,9 @@ import {
   CHAT_LIST_BY_USER,
   GET_CHAT_BY_ID,
   CREATE_CHAT,
+  UPDATE_CHAT,
 } from "../constants/chatConstants";
+import { editDataChat } from "../actions/globalActions";
 
 const initialState = {
   loading: false,
@@ -32,6 +34,15 @@ const chatReducer = (state = initialState, action) => {
       return {
         ...state,
         chats: [action.payload, ...state.chats],
+      };
+    case UPDATE_CHAT:
+      return {
+        ...state,
+        chats: editDataChat(
+          state.chats,
+          action.payload.chat._id,
+          action.payload,
+        ),
       };
     default:
       return state;

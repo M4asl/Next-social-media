@@ -20,6 +20,7 @@ const listNewsFeed = (authCookie, req) => async (dispatch) => {
       headers: {
         Cookie: authCookie,
       },
+      params: { pageNumber: 1 },
     };
 
     const { data } = await axios.get(
@@ -89,45 +90,45 @@ const listByUser = (authCookie, id, req) => async (dispatch) => {
   }
 };
 
-const createPost = (post) => async (dispatch, getState) => {
-  try {
-    dispatch({ type: POST_LOADING, payload: true });
+const createPost =
+  (post, currentUserDetails) => async (dispatch, getState) => {
+    try {
+      dispatch({ type: POST_LOADING, payload: true });
 
-    const {
-      getCurrentUserDetails: { currentUserDetails },
-      authCookie,
-    } = getState();
+      const { authCookie } = getState();
 
-    const config = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Cookie: authCookie,
-      },
-    };
+      console.log(currentUserDetails);
 
-    const { data } = await axios.post(
-      `/api/posts/new/${currentUserDetails._id}`,
-      post,
-      config,
-    );
+      const config = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Cookie: authCookie,
+        },
+      };
 
-    dispatch({ type: POST_CREATE, payload: data });
-    dispatch({ type: POST_LOADING, payload: false });
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    if (message === "Not authorized, token failed") {
-      dispatch(logout());
+      const { data } = await axios.post(
+        `/api/posts/new/${currentUserDetails._id}`,
+        post,
+        config,
+      );
+
+      dispatch({ type: POST_LOADING, payload: false });
+      dispatch({ type: POST_CREATE, payload: data });
+    } catch (error) {
+      const message =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      if (message === "Not authorized, token failed") {
+        dispatch(logout());
+      }
+      dispatch({
+        type: GLOBAL_ALERT,
+        payload: message,
+      });
     }
-    dispatch({
-      type: GLOBAL_ALERT,
-      payload: message,
-    });
-  }
-};
+  };
 
 const removePost = (id) => async (dispatch, getState) => {
   dispatch({ type: POST_REMOVE, payload: id });
@@ -239,7 +240,7 @@ const unlikePost =
     }
   };
 
-const comment =
+const createComment =
   (userId, newComment, post) => async (dispatch, getState) => {
     const postId = post._id;
     const { text } = newComment;
@@ -326,6 +327,6 @@ export {
   removePost,
   likePost,
   unlikePost,
-  comment,
+  createComment,
   uncomment,
 };
