@@ -9,6 +9,7 @@ import {
   getChatById,
 } from "../../store/actions/chatActions";
 import { getMessageByChatId } from "../../store/actions/messageActions";
+import getNotificationByUser from "../../store/actions/notificationActions";
 import {
   getCurrentUserDetails,
   getUsersList,
@@ -39,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
     zIndex: "100",
     display: "flex",
     width: "100%",
+    [theme.breakpoints.down("xs")]: {
+      top: "102px",
+    },
   },
 }));
 
@@ -79,6 +83,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
       );
       await store.dispatch(
         getUsersList(userData, req.headers.cookie, req),
+      );
+      await store.dispatch(
+        getNotificationByUser(req.headers.cookie, req),
       );
       return {
         props: {},
