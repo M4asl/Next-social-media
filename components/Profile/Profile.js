@@ -11,6 +11,7 @@ import FacebookIcon from "@material-ui/icons/Facebook";
 import InstagramIcon from "@material-ui/icons/Instagram";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import YouTubeIcon from "@material-ui/icons/YouTube";
+import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import {
   IconButton,
   List,
@@ -62,12 +63,15 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid rgba( 255, 255, 255, 0.18 )",
     padding: theme.spacing(2, 6, 3),
   },
+  input: {
+    display: "none",
+  },
 }));
 
 export default function Profile() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { userReducer, alert } = useSelector((state) => state);
+  const { userReducer } = useSelector((state) => state);
   const [open, setOpen] = useState(false);
   const CHARACTER_LIMIT = 100;
   const [values, setValues] = useState({
@@ -76,6 +80,7 @@ export default function Profile() {
     instagram: "",
     twitter: "",
     youtube: "",
+    photo: "",
   });
 
   const handleOpen = () => {
@@ -90,11 +95,14 @@ export default function Profile() {
       instagram: "",
       twitter: "",
       youtube: "",
+      photo: "",
     });
   };
 
   const handleChange = (name) => (event) => {
-    setValues({ ...values, [name]: event.target.value });
+    const value =
+      name === "photo" ? event.target.files[0] : event.target.value;
+    setValues({ ...values, [name]: value });
   };
 
   const handleSubmit = () => {
@@ -105,6 +113,7 @@ export default function Profile() {
       formData.append("instagram", values.instagram);
     values.twitter && formData.append("twitter", values.twitter);
     values.youtube && formData.append("youtube", values.youtube);
+    values.photo && formData.append("photo", values.photo);
     dispatch(
       editUserProfile(formData, userReducer.currentUserDetails._id),
     );
@@ -121,9 +130,11 @@ export default function Profile() {
             />
           }
           action={
-            <IconButton aria-label="edit" onClick={handleOpen}>
-              <EditIcon />
-            </IconButton>
+            <>
+              <IconButton aria-label="edit" onClick={handleOpen}>
+                <EditIcon />
+              </IconButton>
+            </>
           }
           title={userReducer.currentUserDetails.name}
           subheader={userReducer.currentUserDetails.email}
@@ -136,7 +147,7 @@ export default function Profile() {
               </ListItemIcon>
               <ListItemText
                 secondary={
-                  userReducer.currentUserDetails
+                  userReducer.currentUserDetails.about
                     ? userReducer.currentUserDetails.about
                     : "Create your user description."
                 }
@@ -148,7 +159,7 @@ export default function Profile() {
               </ListItemIcon>
               <ListItemText
                 secondary={
-                  userReducer.currentUserDetails
+                  userReducer.currentUserDetails.facebook
                     ? userReducer.currentUserDetails.facebook
                     : "Facebook."
                 }
@@ -160,7 +171,7 @@ export default function Profile() {
               </ListItemIcon>
               <ListItemText
                 secondary={
-                  userReducer.currentUserDetails
+                  userReducer.currentUserDetails.instagram
                     ? userReducer.currentUserDetails.instagram
                     : "Instagram."
                 }
@@ -172,7 +183,7 @@ export default function Profile() {
               </ListItemIcon>
               <ListItemText
                 secondary={
-                  userReducer.currentUserDetails
+                  userReducer.currentUserDetails.twitter
                     ? userReducer.currentUserDetails.twitter
                     : "Twitter."
                 }
@@ -184,7 +195,7 @@ export default function Profile() {
               </ListItemIcon>
               <ListItemText
                 secondary={
-                  userReducer.currentUserDetails
+                  userReducer.currentUserDetails.youtube
                     ? userReducer.currentUserDetails.youtube
                     : "Youtube."
                 }
@@ -249,10 +260,36 @@ export default function Profile() {
                 margin="normal"
                 variant="outlined"
               />
+              <label htmlFor="icon-button-file-profile">
+                <input
+                  accept="image/*"
+                  onChange={handleChange("photo")}
+                  className={classes.input}
+                  id="icon-button-file-profile"
+                  type="file"
+                />
+                <Button
+                  color="primary"
+                  aria-label="upload picture"
+                  component="span"
+                  variant="contained"
+                  style={{ marginBottom: "10px", width: "100%" }}
+                >
+                  <PhotoCamera />
+                </Button>
+              </label>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
+                disabled={
+                  !values.about &&
+                  !values.facebook &&
+                  !values.instagram &&
+                  !values.twitter &&
+                  !values.youtube &&
+                  !values.photo
+                }
               >
                 Update profile
               </Button>
