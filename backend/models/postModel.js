@@ -19,7 +19,11 @@ const PostSchema = new Schema({
   ],
   comments: [
     {
-      text: String,
+      _id: { type: String, required: true },
+      text: {
+        type: String,
+        required: [true, "Text is required."],
+      },
       created: { type: Date, default: Date.now },
       postedBy: { type: Schema.ObjectId, ref: "User" },
     },

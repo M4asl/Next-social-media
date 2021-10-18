@@ -26,6 +26,9 @@ exports.createSendToken = (user, statusCode, req, res) => {
     instagram,
     twitter,
     youtube,
+    following,
+    followers,
+    liked,
   } = user;
 
   res.status(statusCode).json({
@@ -40,5 +43,8 @@ exports.createSendToken = (user, statusCode, req, res) => {
     youtube,
     photo,
     token,
+    following,
+    followers,
+    liked,
   });
 };
