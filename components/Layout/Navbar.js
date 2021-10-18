@@ -1,38 +1,42 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import DraftsIcon from "@material-ui/icons/Drafts";
-import SendIcon from "@material-ui/icons/Send";
 import Button from "@material-ui/core/Button";
-import { Notifications } from "@material-ui/icons";
-import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
-import { Avatar, ListItemAvatar } from "@material-ui/core";
+import { Avatar } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import CloseIcon from "@material-ui/icons/Close";
+import LogoutIcon from "@material-ui/icons/ExitToApp";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import Link from "next/link";
 import Loader from "./Loader";
 import { GLOBAL_ALERT } from "../../store/constants/globalConstants";
 import Error from "./Error";
+import Messages from "../Messages/Messages";
+import Notifications from "../Notifications/Notifications";
+import { logout } from "../../store/actions/authActions";
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
   title: {
+    cursor: "pointer",
+    display: "block",
+    [theme.breakpoints.up("xs")]: {
+      fontSize: "0.7rem",
+      textAlign: "center",
+    },
     [theme.breakpoints.up("sm")]: {
-      display: "block",
+      fontSize: "0.8rem",
+    },
+    [theme.breakpoints.up("md")]: {
+      fontSize: "1.2rem",
     },
   },
   search: {
@@ -43,7 +47,16 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 0,
     width: "100%",
     padding: "8px",
+    [theme.breakpoints.up("xs")]: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(0),
+      width: "150px",
+    },
     [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(3),
+      width: "250px",
+    },
+    [theme.breakpoints.up("md")]: {
       marginLeft: theme.spacing(3),
       width: "auto",
     },
@@ -53,6 +66,10 @@ const useStyles = makeStyles((theme) => ({
     pointerEvents: "pointer",
     display: "flex",
     alignItems: "center",
+    [theme.breakpoints.down("xs")]: {
+      padding: "0px",
+      minWidth: "30px",
+    },
   },
   inputRoot: {
     color: "inherit",
@@ -60,10 +77,12 @@ const useStyles = makeStyles((theme) => ({
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     backgroundColor: theme.palette.background.default,
-
     paddingLeft: "1em",
     transition: theme.transitions.create("width"),
     width: "100%",
+    [theme.breakpoints.down("xs")]: {
+      fontSize: "0.8rem",
+    },
     [theme.breakpoints.up("md")]: {
       width: "20ch",
     },
@@ -105,49 +124,17 @@ const useStyles = makeStyles((theme) => ({
     color: "#bfbfbf",
     margin: "12px 0px",
   },
-}));
-
-const StyledMenu = withStyles({
-  paper: {
-    background: "rgba( 255, 255, 255, 0.25 )",
-    boxShadow: "0 2px 12px 0 rgba( 255, 255, 255, 0.2 )",
-    backdropFilter: "blur( 10.0px )",
-    border: "1px solid rgba( 255, 255, 255, 0.18 )",
-  },
-})((props) => (
-  <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "center",
-    }}
-    transformOrigin={{
-      vertical: "top",
-      horizontal: "center",
-    }}
-    PaperProps={{ style: { maxHeight: "80vh", overflowY: "scroll" } }}
-    {...props}
-  />
-));
-
-const StyledMenuItem = withStyles((theme) => ({
-  root: {
-    color: theme.palette.primary.main,
-    "&:focus": {
-      backgroundColor: theme.palette.primary.main,
-      "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
-        color: theme.palette.common.white,
-      },
+  iconContainer: {
+    [theme.breakpoints.down("xs")]: {
+      display: "flex",
+      flexDirection: "column",
     },
   },
-}))(MenuItem);
+}));
 
 export default function PrimarySearchAppBar() {
   const classes = useStyles();
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [messageEl, setMessageEl] = useState(null);
   const [errorMess, setErrorMess] = useState(false);
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
@@ -156,7 +143,7 @@ export default function PrimarySearchAppBar() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (search.length == 0) {
+    if (search.length === 0) {
       setUsers([]);
       setErrorMess(false);
     }
@@ -203,26 +190,14 @@ export default function PrimarySearchAppBar() {
   };
 
   const enterKey = (e) => {
-    if (e.keyCode == 13) {
+    if (e.keyCode === 13) {
       e.preventDefault();
       handleSearch();
     }
   };
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleClickMessage = (event) => {
-    setMessageEl(event.currentTarget);
-  };
-
-  const handleCloseMessage = () => {
-    setMessageEl(null);
+  const logoutHandler = () => {
+    dispatch(logout());
   };
 
   return (
@@ -230,7 +205,7 @@ export default function PrimarySearchAppBar() {
       <AppBar position="fixed" className={classes.menuClass}>
         <Toolbar className={classes.toolBar}>
           <Link href="/">
-            <Typography className={classes.title} variant="h6" noWrap>
+            <Typography className={classes.title} variant="h6">
               MERNN App
             </Typography>
           </Link>
@@ -266,7 +241,7 @@ export default function PrimarySearchAppBar() {
               <div className={classes.usersContainer}>
                 {loading && <Loader />}
                 {errorMess ? <Error errorMessage={alert.err} /> : ""}
-                {users.length == 0 && (
+                {users.length === 0 && (
                   <h3 style={{ textAlign: "center" }}>
                     Press enter to find users.
                   </h3>
@@ -295,82 +270,18 @@ export default function PrimarySearchAppBar() {
               </div>
             )}
           </div>
-          <div>
-            <Button
-              aria-controls="customized-menu-message"
-              aria-haspopup="true"
-              color="primary"
-              onClick={handleClickMessage}
-            >
-              <QuestionAnswerIcon />
-            </Button>
-            <StyledMenu
-              id="customized-menu-message"
-              anchorEl={messageEl}
-              keepMounted
-              open={Boolean(messageEl)}
-              onClose={handleCloseMessage}
-            >
-              <StyledMenuItem>
-                <ListItemAvatar>
-                  <Avatar />
-                </ListItemAvatar>
-                <ListItemText primary="Mateusz Masłowiec" />
-              </StyledMenuItem>
-              <StyledMenuItem>
-                <ListItemAvatar>
-                  <Avatar />
-                </ListItemAvatar>
-                <ListItemText primary="Mateusz Masłowiec" />
-              </StyledMenuItem>
-              <StyledMenuItem>
-                <ListItemAvatar>
-                  <Avatar />
-                </ListItemAvatar>
-                <ListItemText primary="Mateusz Masłowiec" />
-              </StyledMenuItem>
-              <StyledMenuItem>
-                <ListItemAvatar>
-                  <Avatar />
-                </ListItemAvatar>
-                <ListItemText primary="Mateusz Masłowiec" />
-              </StyledMenuItem>
-            </StyledMenu>
+          <div className={classes.iconContainer}>
+            <Messages />
+
+            <Notifications />
 
             <Button
-              aria-controls="customized-menu"
-              aria-haspopup="true"
               color="primary"
-              onClick={handleClick}
+              fontSize="small"
+              onClick={logoutHandler}
             >
-              <Notifications />
+              <LogoutIcon />
             </Button>
-            <StyledMenu
-              id="customized-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <StyledMenuItem>
-                <ListItemIcon>
-                  <SendIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText primary="Sent mail" />
-              </StyledMenuItem>
-              <StyledMenuItem>
-                <ListItemIcon>
-                  <DraftsIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText primary="Drafts" />
-              </StyledMenuItem>
-              <StyledMenuItem>
-                <ListItemIcon>
-                  <InboxIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText primary="Inbox" />
-              </StyledMenuItem>
-            </StyledMenu>
           </div>
         </Toolbar>
       </AppBar>

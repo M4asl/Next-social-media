@@ -1,15 +1,19 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import PropTypes from "prop-types";
 import ChatMenu from "./ChatMenu";
-import ChatsBackground from "./ChatsBackground";
+import ChatList from "./ChatList";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   container: {
     height: "calc(100vh - 66px)",
     position: "sticky",
     top: "66px",
+    [theme.breakpoints.down("xs")]: {
+      height: "calc(100vh - 102px)",
+    },
   },
-});
+}));
 
 const ChatColumn = ({ widthProps }) => {
   const classes = useStyles();
@@ -19,9 +23,13 @@ const ChatColumn = ({ widthProps }) => {
       style={{ width: `${widthProps}` }}
     >
       <ChatMenu />
-      <ChatsBackground />
+      <ChatList />
     </div>
   );
 };
 
 export default ChatColumn;
+
+ChatColumn.propTypes = {
+  widthProps: PropTypes.string.isRequired,
+};

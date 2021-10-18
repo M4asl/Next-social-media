@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import { useDispatch } from "react-redux";
+import PropTypes from "prop-types";
 import { follow } from "../../store/actions/userActions";
 import { USER_FIND_PEOPLE } from "../../store/constants/userConstants";
 
@@ -96,3 +97,7 @@ export default function Suggestion({ userReducer }) {
     </Card>
   );
 }
+
+Suggestion.propTypes = {
+  userReducer: PropTypes.oneOfType([PropTypes.object]).isRequired,
+};

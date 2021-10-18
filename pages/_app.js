@@ -28,5 +28,5 @@ export default wrapper.withRedux(MyApp);
 
 MyApp.propTypes = {
   Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired,
+  pageProps: PropTypes.elementType.isRequired,
 };

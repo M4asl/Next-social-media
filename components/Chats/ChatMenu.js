@@ -1,12 +1,9 @@
-import React, { useState } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import React, { useEffect, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import GroupIcon from "@material-ui/icons/Group";
-import SearchIcon from "@material-ui/icons/Search";
 import Grid from "@material-ui/core/Grid";
-import { Autocomplete } from "@material-ui/lab";
-import { Popper, TextField } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import ChatSearch from "./ChatSearch";
 
@@ -14,16 +11,25 @@ const useStyles = makeStyles((theme) => ({
   container: {
     color: theme.palette.text.primary,
     backgroundColor: theme.palette.background.secondary,
-    // height: "15%",
+    height: "17%",
+    [theme.breakpoints.down("xs")]: {
+      height: "30%",
+    },
   },
   search: {
     display: "flex",
-    borderRadius: theme.shape.borderRadius,
     margin: "8px",
     width: "100%",
     borderRadius: "15px",
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up("xs")]: {
       width: "auto",
+    },
+    [theme.breakpoints.down("sm")]: {
+      margin: "0px",
+      height: "100%",
+      display: "flex",
+      flexDirection: "column",
+      marginTop: "6px",
     },
   },
   searchIcon: {
@@ -59,20 +65,36 @@ const useStyles = makeStyles((theme) => ({
       margin: 0,
     },
   },
+  hiddenElement: {
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+    },
+  },
+  gridItem: {
+    [theme.breakpoints.down("xs")]: {
+      height: "100%",
+    },
+  },
 }));
 
 const ChatMenu = () => {
   const classes = useStyles();
   const { userReducer } = useSelector((state) => state);
-  const [users, setUsers] = useState(userReducer.users);
+  const [users, setUsers] = useState([]);
+  const currentUserId = userReducer.currentUserDetails._id;
+
+  useEffect(() => {
+    setUsers(userReducer.users);
+  }, []);
+
   return (
     <Grid
       container
       className={classes.container}
-      justify="space-between"
+      justifyContent="space-between"
       alignItems="center"
     >
-      <Grid item>
+      <Grid item className={classes.hiddenElement}>
         <Typography
           color="textPrimary"
           variant="h4"
@@ -81,7 +103,7 @@ const ChatMenu = () => {
           Chats
         </Typography>
       </Grid>
-      <Grid item>
+      <Grid item className={classes.hiddenElement}>
         <IconButton>
           <GroupIcon
             style={{
@@ -91,12 +113,12 @@ const ChatMenu = () => {
           />
         </IconButton>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} className={classes.gridItem}>
         <div
           className={classes.search}
           style={{ justifyContent: "space-between" }}
         >
-          <ChatSearch users={users} />
+          <ChatSearch users={users} currentUserId={currentUserId} />
         </div>
       </Grid>
     </Grid>

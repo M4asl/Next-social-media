@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core";
 import React from "react";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   mine: {
     alignItems: "flex-end",
     flexDirection: "row-reverse",
@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     maxWidth: "max-content",
-    padding: "1px 8px",
+    padding: "2.5px 5px",
     borderRadius: "16px",
   },
   maxSizeMessage: {
@@ -58,14 +58,15 @@ const Message = ({
     const nextSenderId =
       nextMessage != null ? nextMessage?.sender._id : "";
 
-    const isFirst = lastSenderId != currentSenderId;
-    const isLast = nextSenderId != currentSenderId;
+    const isFirst = lastSenderId !== currentSenderId;
+    const isLast = nextSenderId !== currentSenderId;
 
-    const isMine = message.sender._id == currentUserDetails._id;
+    const isMine = message.sender._id === currentUserDetails._id;
     const liClassName = isMine ? classes.mine : classes.theirs;
 
     return (
       <li
+        style={{ paddingLeft: "30px" }}
         className={
           isLast && !isMine
             ? `${liClassName} ${classes.messageContainer} ${classes.maxSizeMessage} ${classes.isLastClass}`
@@ -93,17 +94,22 @@ const Message = ({
             {message.content}
           </span>
         </div>
+        <div>
+          {/* {isLast &&
+            message.readBy &&
+            message.readBy.map((user) => user.name)} */}
+        </div>
       </li>
     );
   }
+
+  lastSenderId = message.sender._id;
 
   const messageView = createMessageView(
     message,
     messages[index + 1],
     lastSenderId,
   );
-
-  lastSenderId = message.sender._id;
 
   return messageView;
 };

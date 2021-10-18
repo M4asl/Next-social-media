@@ -20,11 +20,17 @@ const useStyles = makeStyles((theme) => ({
     background: "rgba( 255, 255, 255, 0.25 )",
     backdropFilter: "blur( 10.0px )",
     border: "1px solid rgba( 255, 255, 255, 0.18 )",
+    [theme.breakpoints.down("sm")]: {
+      height: "15%",
+    },
   },
   textBox: {
     display: "flex",
     overflow: "hidden",
     whiteSpace: "nowrap",
+  },
+  chatHeaderInfo: {
+    overflow: "hidden",
   },
 }));
 
@@ -35,7 +41,7 @@ const ChatHeader = () => {
   const { chat } = chatReducer;
   return (
     <div className={classes.chatHeaderContainer}>
-      <List>
+      <List className={classes.chatHeaderInfo}>
         <ListItem>
           {chat.isGroupChat ? (
             <ListItemAvatar style={{ marginRight: "16px" }}>
@@ -43,13 +49,25 @@ const ChatHeader = () => {
                 {chat.users
                   .filter((user) => user._id !== currentUserId)
                   .map((user) => (
-                    <Avatar key={user._id} />
+                    <Avatar
+                      key={user._id}
+                      alt="Avatar Picture"
+                      src={`../../dist/img/users/${user.photo}`}
+                    />
                   ))}
               </AvatarGroup>
             </ListItemAvatar>
           ) : (
             <ListItemAvatar>
-              <Avatar />
+              {chat.users
+                .filter((user) => user._id !== currentUserId)
+                .map((user) => (
+                  <Avatar
+                    key={user._id}
+                    alt="Avatar Picture"
+                    src={`../../dist/img/users/${user.photo}`}
+                  />
+                ))}
             </ListItemAvatar>
           )}
           <div className={classes.textBox}>
