@@ -4,6 +4,10 @@ const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/AppError");
 const { createSendToken } = require("../utils/createToken");
+const {
+  newFollowNotification,
+  removeFollowNotification,
+} = require("./notificationController");
 
 const multerStorage = multer.memoryStorage();
 
@@ -118,6 +122,17 @@ exports.removeUser = catchAsync(async (req, res, next) => {
 });
 
 exports.addFollowing = catchAsync(async (req, res, next) => {
+  // const followUser = await User.findById(req.body.userId);
+
+  // const isFollowing =
+  //   followUser.following.filter(
+  //     (follow) => follow.toString() === req.body.followId,
+  //   ).length > 0;
+
+  // if (isFollowing) {
+  //   return next(new AppError("You already follow this user.", 404));
+  // }
+
   await User.findByIdAndUpdate(req.body.userId, {
     $push: { following: req.body.followId },
   });
@@ -133,6 +148,7 @@ exports.addFollower = catchAsync(async (req, res) => {
     .populate("following", "_id name")
     .populate("followers", "_id name")
     .exec();
+  await newFollowNotification(req.body.userId, req.body.followId);
   res.json(result);
 });
 
@@ -152,6 +168,10 @@ exports.removeFollower = catchAsync(async (req, res) => {
     .populate("following", "_id name")
     .populate("followers", "_id name")
     .exec();
+  await removeFollowNotification(
+    req.body.userId,
+    req.body.unfollowId,
+  );
   res.json(result);
 });
 
@@ -161,7 +181,7 @@ exports.findPeople = catchAsync(async (req, res) => {
   following.push(user._id);
 
   const users = await User.find({ _id: { $nin: following } }).select(
-    "name",
+    "name photo",
   );
   res.json(users);
 });

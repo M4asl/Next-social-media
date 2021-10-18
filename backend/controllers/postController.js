@@ -4,6 +4,13 @@ const Post = require("../models/postModel");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/AppError");
+const {
+  newLikeNotifiaction,
+  newCommentNotification,
+  removeLikeNotification,
+  removeCommentNotification,
+} = require("./notificationController");
+const { v4: uuidv4 } = require("uuid");
 
 const multerStorage = multer.memoryStorage();
 
@@ -105,9 +112,25 @@ exports.removePost = catchAsync(async (req, res) => {
 });
 
 exports.likePost = catchAsync(async (req, res, next) => {
+  const likedPost = await Post.findById(req.body.postId);
+
+  const isLiked =
+    likedPost.likes.filter(
+      (like) => like.toString() === req.body.likeId,
+    ).length > 0;
+  if (isLiked) {
+    return next(new AppError("Post already liked", 404));
+  }
+
   await Post.findByIdAndUpdate(req.body.postId, {
     $push: { likes: req.body.likeId },
   });
+  const userToNotifyId = likedPost.postedBy;
+  await newLikeNotifiaction(
+    req.body.likeId,
+    req.body.postId,
+    userToNotifyId,
+  );
   next();
 });
 
@@ -124,9 +147,25 @@ exports.likedPost = catchAsync(async (req, res) => {
 });
 
 exports.unlikePost = catchAsync(async (req, res, next) => {
+  const unlikedPost = await Post.findById(req.body.postId);
+
+  const isUnliked = unlikedPost.likes.find(
+    (like) => like.toString() === req.body.unlikeId,
+  );
+
+  if (!isUnliked) {
+    return next(new AppError("Post already unliked", 404));
+  }
+
   await Post.findByIdAndUpdate(req.body.postId, {
     $pull: { likes: req.body.unlikeId },
   });
+  const userToNotifyId = unlikedPost.postedBy;
+  await removeLikeNotification(
+    req.body.unlikeId,
+    req.body.postId,
+    userToNotifyId,
+  );
   next();
 });
 
@@ -152,7 +191,9 @@ exports.findLikesPost = catchAsync(async (req, res) => {
 
 exports.comment = catchAsync(async (req, res) => {
   const { comment } = req.body;
+  comment._id = uuidv4();
   comment.postedBy = req.body.userId;
+  comment.text = req.body.comment.text;
 
   const result = await Post.findByIdAndUpdate(
     req.body.postId,
@@ -162,11 +203,31 @@ exports.comment = catchAsync(async (req, res) => {
     .populate("comments.postedBy", "_id name photo")
     .populate("postedBy", "_id name photo")
     .exec();
+  const userToNotifyId = result.postedBy._id;
+  const commentId = comment._id;
+  await newCommentNotification(
+    req.body.userId,
+    userToNotifyId,
+    req.body.postId,
+    commentId,
+    comment.text,
+  );
   res.json(result);
 });
 
 exports.uncomment = catchAsync(async (req, res) => {
   const { comment } = req.body;
+
+  const post = await Post.findById(req.body.postId);
+
+  const commentPostedBy = await Post.find(
+    { comments: { $elemMatch: { _id: comment._id } } },
+    { "comments.$": 1 },
+  );
+
+  // console.log(commentPostedBy[0].comments[0].postedBy);
+  const commentPostedById = commentPostedBy[0].comments[0].postedBy;
+  const userToNotifyId = post.postedBy;
 
   const result = await Post.findByIdAndUpdate(
     req.body.postId,
@@ -176,6 +237,13 @@ exports.uncomment = catchAsync(async (req, res) => {
     .populate("comments.postedBy", "_id name photo")
     .populate("postedBy", "_id name photo")
     .exec();
+
+  await removeCommentNotification(
+    req.body.postId,
+    comment._id,
+    commentPostedById,
+    userToNotifyId,
+  );
   res.json(result);
 });
 
