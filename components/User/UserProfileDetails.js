@@ -11,11 +11,12 @@ import {
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import PropTypes from "prop-types";
 import FollowProfileButton from "../Layout/FollowProfileButton";
+import { createChat } from "../../store/actions/chatActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    minHeight: "250px",
     color: theme.palette.text.primary,
     fontWeight: "500",
     background: "rgba( 255, 255, 255, 0.25 )",
@@ -37,7 +38,6 @@ const UserProfileDetails = ({ userReducer, postReducer }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [following, setFollowing] = useState(false);
-
   const clickFollowButton = (callApi) => {
     dispatch(
       callApi(
@@ -52,7 +52,7 @@ const UserProfileDetails = ({ userReducer, postReducer }) => {
     // console.log(user.followers);
     const matchFollowers = user?.followers.some(
       (follower) =>
-        follower._id == userReducer.currentUserDetails._id,
+        follower._id === userReducer.currentUserDetails._id,
     );
     return matchFollowers;
   };
@@ -86,9 +86,8 @@ const UserProfileDetails = ({ userReducer, postReducer }) => {
       <CardContent className={classes.countContainer}>
         <Typography
           variant="overline"
-          color="textPrimary"
           component="p"
-          style={{ fontWeight: "700" }}
+          style={{ fontWeight: "700", color: "#141414" }}
         >
           {userReducer.user.followers.length === 0
             ? "0"
@@ -97,9 +96,8 @@ const UserProfileDetails = ({ userReducer, postReducer }) => {
         </Typography>
         <Typography
           variant="overline"
-          color="textPrimary"
           component="p"
-          style={{ fontWeight: "700" }}
+          style={{ fontWeight: "700", color: "#141414" }}
         >
           {userReducer.user.following.length === 0
             ? "0"
@@ -108,9 +106,8 @@ const UserProfileDetails = ({ userReducer, postReducer }) => {
         </Typography>
         <Typography
           variant="overline"
-          color="textPrimary"
           component="p"
-          style={{ fontWeight: "700" }}
+          style={{ fontWeight: "700", color: "#141414" }}
         >
           {postReducer.posts.length === 0
             ? "0"
@@ -123,11 +120,19 @@ const UserProfileDetails = ({ userReducer, postReducer }) => {
         <FollowProfileButton
           following={following}
           onButtonClick={clickFollowButton}
+          widthProps="50%"
+          variantProps="outlined"
         />
         <Button
           variant="outlined"
           color="primary"
-          style={{ width: "50%" }}
+          style={{
+            width: "50%",
+            padding: "2px 4px",
+            fontSize: "0.7rem",
+            minWidth: "70px",
+          }}
+          onClick={() => dispatch(createChat(userReducer.user._id))}
         >
           Message
         </Button>
@@ -137,3 +142,8 @@ const UserProfileDetails = ({ userReducer, postReducer }) => {
 };
 
 export default UserProfileDetails;
+
+UserProfileDetails.propTypes = {
+  userReducer: PropTypes.oneOfType([PropTypes.object]).isRequired,
+  postReducer: PropTypes.oneOfType([PropTypes.object]).isRequired,
+};
