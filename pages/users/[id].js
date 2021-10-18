@@ -11,6 +11,8 @@ import { authCookie } from "../../store/actions/authActions";
 import UserProfileDetails from "../../components/User/UserProfileDetails";
 import { listByUser } from "../../store/actions/postActions";
 import PostList from "../../components/Post/PostList";
+import getNotificationByUser from "../../store/actions/notificationActions";
+import { getChatsByUser } from "../../store/actions/chatActions";
 
 const useStyles = makeStyles((theme) => ({
   userDetailsContainer: {
@@ -22,6 +24,13 @@ const useStyles = makeStyles((theme) => ({
     top: "10%",
     left: "50%",
     transform: "translateX(-50%)",
+    [theme.breakpoints.down("md")]: {
+      width: "70%",
+    },
+    [theme.breakpoints.down("sm")]: {
+      width: "90%",
+      top: "20%",
+    },
   },
 }));
 
@@ -63,6 +72,12 @@ export const getServerSideProps = wrapper.getServerSideProps(
     );
     await store.dispatch(
       listByUser(ctx.req.headers.cookie, id, ctx.req),
+    );
+    await store.dispatch(
+      getChatsByUser(ctx.req.headers.cookie, ctx.req),
+    );
+    await store.dispatch(
+      getNotificationByUser(ctx.req.headers.cookie, ctx.req),
     );
     return {
       props: {},
