@@ -20,24 +20,55 @@ exports.createMessage = catchAsync(async (req, res, next) => {
   let message = await Message.create(newMessage);
   message = await message
     .populate("sender", "_id name")
+    .populate("readBy", "_id name photo")
     .populate("chat")
     .execPopulate();
   message = await User.populate(message, {
     path: "chat.users",
-    select: "_id name",
+    select: "_id name photo",
   });
 
-  //   const chat = await Chat.findByIdAndUpdate(req.body.chatId, {
-  //     latestMessage: message,
-  //   });
+  await Chat.findByIdAndUpdate(req.body.chatId, {
+    latestMessage: message,
+  });
 
   res.status(201).json(message);
 });
 
 exports.getMessagesByChatId = catchAsync(async (req, res, next) => {
-  const messages = await Message.find({
-    chat: req.params.chatId,
-  }).populate("sender", "_id name photo");
+  const { messagePageNumber } = req.query;
+  const number = Number(messagePageNumber);
+  const size = 20;
+  let messages;
+  if (number === 1) {
+    messages = await Message.find({
+      chat: req.params.chatId,
+    })
+      .limit(size)
+      .populate("sender", "_id name photo")
+      .populate("readBy", "_id name photo")
+      .sort("-createdAt")
+      .exec();
+  } else {
+    const skips = size * (number - 1);
+    messages = await Message.find({
+      chat: req.params.chatId,
+    })
+      .skip(skips)
+      .limit(size)
+      .populate("sender", "_id name photo")
+      .populate("readBy", "_id name photo")
+      .sort("-createdAt")
+      .exec();
+  }
 
   res.status(200).json(messages);
+});
+
+exports.readMessageByUser = catchAsync(async (req, res, next) => {
+  await Message.updateMany(
+    { chat: req.params.chatId },
+    { $addToSet: { readBy: req.user._id } },
+  );
+  res.sendStatus(204);
 });
