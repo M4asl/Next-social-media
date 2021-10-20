@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
-import cookie from "js-cookie";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
 import LoadPost from "./LoadPost";
 import Post from "./Post";
 import Loader from "../Layout/Loader";
-import { useDispatch } from "react-redux";
-import { POST_LIST_NEWS_FEED } from "../../store/constants/postConstants";
 import { updatePostScroll } from "../../store/actions/postActions";
-import { wrapper } from "../../store/store";
 
 const useStyles = makeStyles((theme) => ({
   root: {
