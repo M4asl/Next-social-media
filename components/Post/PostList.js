@@ -9,6 +9,10 @@ import PropTypes from "prop-types";
 import LoadPost from "./LoadPost";
 import Post from "./Post";
 import Loader from "../Layout/Loader";
+import { useDispatch } from "react-redux";
+import { POST_LIST_NEWS_FEED } from "../../store/constants/postConstants";
+import { updatePostScroll } from "../../store/actions/postActions";
+import { wrapper } from "../../store/store";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,31 +35,17 @@ const useStyles = makeStyles((theme) => ({
 const PostList = ({ postReducer }) => {
   const classes = useStyles();
   const router = useRouter();
+  const dispatch = useDispatch();
   const [hasMore, setHasMore] = useState(true);
   const [pageNumber, setPageNumber] = useState(2);
-  const [postList, setPostList] = useState([]);
-  const baseUrl = "http://localhost:3000";
 
   useEffect(() => {
-    setPostList(postReducer.posts);
+    setHasMore(!postReducer.noMoreData);
   }, [postReducer]);
 
-  const fetchDataOnScroll = async () => {
-    try {
-      const res = await axios.get(`${baseUrl}/api/posts/feed`, {
-        headers: { Authorization: cookie.get("token") },
-        params: { pageNumber },
-      });
-      // console.log(res.data.length);
-      if (res.data.length === 0) setHasMore(false);
-
-      setPostList((prev) => [...prev, ...res.data]);
-      console.log(pageNumber);
-      setPageNumber((prev) => prev + 1);
-      console.log(pageNumber);
-    } catch (error) {
-      console.log(error);
-    }
+  const fetchDataOnScroll = () => {
+    dispatch(updatePostScroll(pageNumber));
+    setPageNumber((prev) => prev + 1);
   };
 
   return (
@@ -67,9 +57,9 @@ const PostList = ({ postReducer }) => {
           next={fetchDataOnScroll}
           loader={<LoadPost />}
           endMessage={<h1>No posts.</h1>}
-          dataLength={postList.length}
+          dataLength={postReducer.posts.length}
         >
-          {postList.map((item) => (
+          {postReducer.posts.map((item) => (
             <Post post={item} key={item._id} />
           ))}
         </InfiniteScroll>

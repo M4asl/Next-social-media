@@ -1,5 +1,6 @@
 import axios from "axios";
 import absoluteUrl from "next-absolute-url";
+import cookie from "js-cookie";
 import {
   POST_LIST_NEWS_FEED,
   POST_LIST_BY_USER,
@@ -7,6 +8,8 @@ import {
   POST_UPDATE,
   POST_REMOVE,
   POST_LOADING,
+  UPDATE_POSTS_SCROLL,
+  NO_MORE_DATA,
 } from "../constants/postConstants";
 import { GLOBAL_ALERT } from "../constants/globalConstants";
 import { logout } from "./authActions";
@@ -32,6 +35,49 @@ const listNewsFeed = (authCookie, req) => async (dispatch) => {
       type: POST_LIST_NEWS_FEED,
       payload: data,
     });
+
+    dispatch({
+      type: POST_LOADING,
+      payload: false,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: GLOBAL_ALERT,
+      payload: message,
+    });
+  }
+};
+
+const updatePostScroll = (pageNumber) => async (dispatch) => {
+  try {
+    dispatch({ type: POST_LOADING, payload: true });
+
+    const config = {
+      headers: { Authorization: cookie.get("token") },
+      params: { pageNumber },
+    };
+
+    const { data } = await axios.get(
+      `${origin}/api/posts/feed`,
+      config,
+    );
+
+    dispatch({
+      type: UPDATE_POSTS_SCROLL,
+      payload: data,
+    });
+
+    if (data.length === 0) {
+      dispatch({ type: POST_LOADING, payload: false });
+      dispatch({ type: NO_MORE_DATA, payload: true });
+    }
 
     dispatch({
       type: POST_LOADING,
@@ -329,4 +375,5 @@ export {
   unlikePost,
   createComment,
   uncomment,
+  updatePostScroll,
 };
