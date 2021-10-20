@@ -115,6 +115,10 @@ const useStyles = makeStyles((theme) => ({
     padding: "10px 20px",
     border: "3px solid #bfbfbf",
     borderRadius: "15px",
+    display: "flex",
+    // justifyContent: "space-around",
+    flexDirection: "column",
+    // alignItems: "center",
   },
   userCard: {
     background: "rgba( 255, 255, 255, 0.25 )",
@@ -123,6 +127,7 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid rgba( 255, 255, 255, 0.18 )",
     color: "#bfbfbf",
     margin: "12px 0px",
+    overflow: "unset",
   },
   iconContainer: {
     [theme.breakpoints.down("xs")]: {
@@ -171,12 +176,7 @@ export default function PrimarySearchAppBar() {
       } catch (error) {
         dispatch({
           type: GLOBAL_ALERT,
-          payload: {
-            err:
-              error.response && error.response.data.message
-                ? error.response.data.message
-                : error.message,
-          },
+          payload: error.response.data.message,
         });
         setErrorMess(true);
         setLoading(false);
@@ -240,11 +240,15 @@ export default function PrimarySearchAppBar() {
             {search && (
               <div className={classes.usersContainer}>
                 {loading && <Loader />}
-                {errorMess ? <Error errorMessage={alert.err} /> : ""}
                 {users.length === 0 && (
                   <h3 style={{ textAlign: "center" }}>
                     Press enter to find users.
                   </h3>
+                )}
+                {errorMess ? (
+                  <Error errorMessage={alert.error} />
+                ) : (
+                  ""
                 )}
                 <>
                   {users.map((user) => (

@@ -171,7 +171,7 @@ const ChatList = () => {
                     ))}
                 </ListItemAvatar>
               )}
-              <div style={{ overflow: "hidden" }}>
+              <div style={{ overflow: "hidden", maxHeight: "41px" }}>
                 <span className={classes.textBox}>
                   {chat.users
                     .filter((user) => user._id !== currentUserId)

@@ -8,6 +8,7 @@ const useStyles = makeStyles(() => ({
     fontSize: "1rem",
     color: "#ba000d",
     maxWidth: "200px",
+    textAlign: "center",
   },
 }));
 

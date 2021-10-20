@@ -54,7 +54,13 @@ const StyledMenu = withStyles({
       vertical: "top",
       horizontal: "center",
     }}
-    PaperProps={{ style: { maxHeight: "80vh", overflowY: "scroll" } }}
+    PaperProps={{
+      style: {
+        maxHeight: "80vh",
+        overflowY: "scroll",
+        maxWidth: "300px",
+      },
+    }}
     {...props}
   />
 ));

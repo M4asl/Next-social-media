@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 100,
     minHeight: "43vh",
     position: "sticky",
-    top: "10%",
+    top: "9%",
     left: "6%",
     borderRadius: "15px",
     background: "rgba( 255, 255, 255, 0.25 )",
@@ -123,6 +123,7 @@ export default function Profile() {
     <>
       <Card className={classes.root}>
         <CardHeader
+          style={{ overflowWrap: "anywhere" }}
           avatar={
             <Avatar
               alt="Avatar Picture"
