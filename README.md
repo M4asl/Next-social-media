@@ -1,34 +1,74 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## MERNN Social media App Project
 
-## Getting Started
+Social Media App.
 
-First, run the development server:
+![ViewAplication](https://user-images.githubusercontent.com/61429037/137980241-6f663677-58bc-40c7-ba1c-e9145578e259.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Demo
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+<ul>
+  <li>React</li>
+  <li>MongoDB</li>
+  <li>Next.js</li>
+  <li>Express.js</li>
+  <li>Redux</li>
+  <li>material-ui</li>
+  <li>axios</li>
+  <li>socket.io</li>
+</ul>
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Features
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+<ul>
+  <li>Create new account</li>
+  <li>Follow and unfollow users</li>
+  <li>Create posts</li>
+  <li>Like and comment posts</li>
+  <li>Delete posts and comment</li>
+  <li>Suggestions new users</li>
+  <li>Create chat or group chats</li>
+  <li>Realtime messages</li>
+  <li>Infinite scroll</li>
+  <li>Update profile description and photos</li>
+  <li>Like, comment, follow notifications</li>
+</ul>
 
-## Learn More
+## Screenshots
 
-To learn more about Next.js, take a look at the following resources:
+<p align="center">Register page</p>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![Register](https://user-images.githubusercontent.com/61429037/137986090-cd09f67c-a3fa-499f-86f3-505a61b82c30.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+<p align="center">Login page</p>
 
-## Deploy on Vercel
+![Login](https://user-images.githubusercontent.com/61429037/137986131-af22737d-8639-4360-a7eb-4407a4c72a3f.png)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+<p align="center">Home page</p>
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+![Home](https://user-images.githubusercontent.com/61429037/137986183-3c17b1e7-d65b-4e68-b903-b978aaf2ebe0.png)
+
+<p align="center">User page</p>
+
+![UserPage](https://user-images.githubusercontent.com/61429037/137986237-6333736c-3201-468f-84b1-e0f64bf0d198.png)
+
+<p align="center">Chat page</p>
+
+![ChatPage](https://user-images.githubusercontent.com/61429037/137986282-3b8392ab-95a1-41ff-81ab-23db946827d8.png)
+
+<p align="center">Edit profile</p>
+
+![EditProfile](https://user-images.githubusercontent.com/61429037/137986406-0414a46e-6dbc-4bac-8aa7-d92c32bb19b8.png)
+
+<p align="center">Search users</p>
+
+![SearchUsers](https://user-images.githubusercontent.com/61429037/137986503-35b97eda-50d2-48a9-98b6-cf12f4836338.png)
+
+<p align="center">Messages</p>
+
+![Messages](https://user-images.githubusercontent.com/61429037/137986524-4777e2a6-00ca-48ca-80ac-138f2a112a7b.png)
+
+<p align="center">Notifications</p>
+
+![Notifications](https://user-images.githubusercontent.com/61429037/137986585-bb4d8a34-d6f6-4597-8789-9eb830e4cf90.png)
