@@ -7,11 +7,13 @@ Social Media App.
 ## environment variables
 
 Example:
-MONGODB_URI=mongodb+srv://cluster0.example.com/testdb?authSource=$external&authMechanism=MONGODB-AWS
-PORT=3000
-JWT_SECRET=someSecretPassword
-JWT_EXPIRES_IN=90d
-NODE_ENV=production
+<ul>
+  <li>MONGODB_URI=mongodb+srv://cluster0.example.com/testdb?authSource=$external&authMechanism=MONGODB-AWS</li>
+  <li>PORT=3000</li>
+  <li>JWT_SECRET=someSecretPassword</li>
+  <li>JWT_EXPIRES_IN=90d</li>
+  <li>NODE_ENV=production</li>
+</ul>
 
 ## Technologies
 
