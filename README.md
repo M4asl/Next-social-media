@@ -4,7 +4,16 @@ Social Media App.
 
 ![ViewAplication](https://user-images.githubusercontent.com/61429037/137980241-6f663677-58bc-40c7-ba1c-e9145578e259.png)
 
-## Demo
+## environment variables
+
+Example:
+<ul>
+  <li>MONGODB_URI=mongodb+srv://cluster0.example.com/testdb?authSource=$external&authMechanism=MONGODB-AWS</li>
+  <li>PORT=3000</li>
+  <li>JWT_SECRET=someSecretPassword</li>
+  <li>JWT_EXPIRES_IN=90d</li>
+  <li>NODE_ENV=production</li>
+</ul>
 
 ## Technologies
 
